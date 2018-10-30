@@ -1,38 +1,73 @@
 ﻿using System;
-using System.Globalization;
 using Microsoft.Speech.Recognition;
-using Microsoft.Speech.Synthesis;
 
 namespace VoiceRecognition
 {
     class Program
     {
-        // Handle the SpeechRecognized event.windows 
-        static void recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
-        {
-            Console.WriteLine("Grammar({0}): {1}", e.Result.Grammar.Name, e.Result.Text);
-        }
+        static bool done = false;
 
         static void Main(string[] args)
         {
-            SpeechSynthesizer ss = new SpeechSynthesizer();
-            ss.SetOutputToDefaultAudioDevice();
-
-            var ci = new CultureInfo("ru-RU");
-            using (var sre = new SpeechRecognitionEngine(ci))
+            try
             {
+                Console.WriteLine("I'm listening");
+
+                System.Globalization.CultureInfo ci =
+                  new System.Globalization.CultureInfo("ru-ru");
+                SpeechRecognitionEngine sre =
+                  new SpeechRecognitionEngine(ci);
                 sre.SetInputToDefaultAudioDevice();
+                sre.SpeechRecognized += sre_SpeechRecognized;
+                sre.RecognizeCompleted += sre_RecognizeCompleted;
 
-                GrammarBuilder gb = new GrammarBuilder(new Choices(new string[] { "налево", "направо", "вперед", "назад" }));
-                gb.Culture = ci;
-                Grammar g = new Grammar(gb);
+                Choices colorChoices = new Choices();
+                colorChoices.Add("направо");
+                colorChoices.Add("налево");
+                colorChoices.Add("вперёд");
+                colorChoices.Add("назад");
+                colorChoices.Add("всё"); // quit
 
-                sre.LoadGrammarAsync(g);
+                GrammarBuilder colorsGrammarBuilder =
+                  new GrammarBuilder();
+                colorsGrammarBuilder.Culture = ci;
+                colorsGrammarBuilder.Append(colorChoices);
+                Grammar keyWordsGrammar =
+                  new Grammar(colorsGrammarBuilder);
+                sre.LoadGrammarAsync(keyWordsGrammar);
+
                 sre.RecognizeAsync(RecognizeMode.Multiple);
-                sre.SpeechRecognized += recognizer_SpeechRecognized;
-            }
 
-            Console.ReadLine();
+                while (done == false) {; }
+
+                Console.WriteLine("Done");
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+            }
+        } // Main
+
+        static void sre_SpeechRecognized(object sender,
+          SpeechRecognizedEventArgs e)
+        {
+            if (e.Result.Text == "всё")
+            {
+                ((SpeechRecognitionEngine)sender).RecognizeAsyncCancel();
+                return;
+            }
+            if (e.Result.Confidence >= 0.75)
+                Console.WriteLine("I heard " + e.Result.Text);
+            else
+                Console.WriteLine("Unknown word");
         }
-    }
-}
+
+        static void sre_RecognizeCompleted(object sender,
+          RecognizeCompletedEventArgs e)
+        {
+            done = true;
+        }
+    } // class Program
+} // ns
