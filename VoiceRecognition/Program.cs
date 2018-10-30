@@ -18,16 +18,19 @@ namespace VoiceRecognition
             SpeechSynthesizer ss = new SpeechSynthesizer();
             ss.SetOutputToDefaultAudioDevice();
 
-            SpeechRecognitionEngine sre = new SpeechRecognitionEngine(new CultureInfo("ru-RU"));
-            sre.SetInputToDefaultAudioDevice();
+            var ci = new CultureInfo("ru-RU");
+            using (var sre = new SpeechRecognitionEngine(ci))
+            {
+                sre.SetInputToDefaultAudioDevice();
 
-            Choices choises = new Choices(new string[] {"налево", "направо", "вперед", "назад"});
-            GrammarBuilder gb = new GrammarBuilder(choises);
-            gb.Culture = new CultureInfo("ru-RU");
-            Grammar g = new Grammar(gb);
-            sre.LoadGrammarAsync(g);
-            sre.RecognizeAsync(RecognizeMode.Single);
-            sre.SpeechRecognized += recognizer_SpeechRecognized;
+                GrammarBuilder gb = new GrammarBuilder(new Choices(new string[] { "налево", "направо", "вперед", "назад" }));
+                gb.Culture = ci;
+                Grammar g = new Grammar(gb);
+
+                sre.LoadGrammarAsync(g);
+                sre.RecognizeAsync(RecognizeMode.Multiple);
+                sre.SpeechRecognized += recognizer_SpeechRecognized;
+            }
 
             Console.ReadLine();
         }
