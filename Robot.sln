@@ -3,24 +3,54 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLEConnector", "BLEConnector\BLEConnector.csproj", "{D3229A87-528A-4751-8ADB-016BF8E192AF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceRecognition", "VoiceRecognition\VoiceRecognition.csproj", "{B1E23333-9625-4541-8E8C-FDC22E61FF84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLEConnect", "BLEConnect\BLEConnect.csproj", "{BFD177AF-6B13-436D-A365-D40BEE82B8A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D3229A87-528A-4751-8ADB-016BF8E192AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3229A87-528A-4751-8ADB-016BF8E192AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3229A87-528A-4751-8ADB-016BF8E192AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3229A87-528A-4751-8ADB-016BF8E192AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|ARM.Build.0 = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|x64.Build.0 = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Debug|x86.Build.0 = Debug|Any CPU
 		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|ARM.Build.0 = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|x64.ActiveCfg = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|x64.Build.0 = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1E23333-9625-4541-8E8C-FDC22E61FF84}.Release|x86.Build.0 = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|x64.Build.0 = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|ARM.Build.0 = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|x64.ActiveCfg = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|x64.Build.0 = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{BFD177AF-6B13-436D-A365-D40BEE82B8A5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
