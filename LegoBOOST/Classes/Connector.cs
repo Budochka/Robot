@@ -1,13 +1,14 @@
 ﻿using System;
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.Advertisement;
-using System.Threading.Tasks;
+using LegoBOOST.Helpers;
 
-namespace LegoBOOST
+
+namespace LegoBOOST.Classes
 {
     public class Connector
     {
         private const ulong _adreessLEGO = 0x001653A7DE77;
+        private const string _serviceUUID = "00001624-1212-efde-1623-785feabcd123";
         private BluetoothLEDevice _bluetoothLEDevice;
 
         public Connector()
@@ -19,7 +20,7 @@ namespace LegoBOOST
         {
             try
             {
-                var device = Task.Run(() => BluetoothLEDevice.FromBluetoothAddressAsync(_adreessLEGO)).Result.GetResults();
+                var device = AsyncHelpers.RunSync<BluetoothLEDevice>(() => BluetoothLEDevice.FromBluetoothAddressAsync(_adreessLEGO).AsTask());
                 if (device != null)
                 {
                     _bluetoothLEDevice = device;

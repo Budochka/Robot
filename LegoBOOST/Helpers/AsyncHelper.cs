@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using static System.Console;
 
-namespace BlueToothTest
+namespace LegoBOOST.Helpers
 {
     public static class AsyncHelpers
     {
@@ -131,49 +128,6 @@ namespace BlueToothTest
             {
                 return this;
             }
-        }
-    }
-
-    class Program
-    {
-        private const ulong AdreessLEGO = 95892790903;
-
-        static void ConnectBluetooth()
-        {
-            var device = AsyncHelpers.RunSync<BluetoothLEDevice>(() => BluetoothLEDevice.FromBluetoothAddressAsync(AdreessLEGO).AsTask());
-
-            if (device != null)
-            {
-                WriteLine($"BLEWATCHER Found: Name = {device.Name}, Address = {device.BluetoothAddress}, AddressType = {device.BluetoothAddressType}");
-
-                // SERVICES!!
-
-                var services = AsyncHelpers.RunSync<GattDeviceServicesResult>(() => device.GetGattServicesAsync().AsTask());
-                //var services = await device.GetGattServicesAsync();
-                foreach (var service in services.Services)
-                {
-                    WriteLine($"Service: {service.Uuid}");
-                    //                    var characteristics = await service.GetCharacteristicsAsync();
-                    var characteristics = AsyncHelpers.RunSync<GattCharacteristicsResult>(() => service.GetCharacteristicsAsync().AsTask());
-                    foreach (var character in characteristics.Characteristics)
-                    {
-                        WriteLine($"Characteristic: {character.Uuid}");
-                    }
-                }
-
-                // CHARACTERISTICS!!
-//                var characs = await gatt.Services.Single(s => s.Uuid == SAMPLESERVICEUUID).GetCharacteristicsAsync();
-//                var charac = characs.Single(c => c.Uuid == SAMPLECHARACUUID);
-//                await charac.WriteValueAsync(SOMEDATA);
-            }
-        }
-
-        static void Main(string[] args)
-        {
-            ConnectBluetooth();
-
-            // Close on key press
-            ReadLine();
         }
     }
 }
