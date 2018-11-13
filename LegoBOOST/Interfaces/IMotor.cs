@@ -1,9 +1,8 @@
-﻿namespace LegoBOOST
+﻿namespace LegoBOOST.Interfaces
 {
-    namespace Interfaces
+    public interface IMotor
     {
-        public interface IMotor
-        {
-        }
+        int Speed { get; set; }
+        void SetSpeedTimed(uint seconds, int speed);
     }
 }
