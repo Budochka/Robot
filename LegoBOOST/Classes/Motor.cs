@@ -9,8 +9,8 @@ namespace LegoBOOST.Classes
 {
     class Motor : IMotor
     {
-        private GattCharacteristic _characteristic;
-        private Ports _port;
+        private readonly GattCharacteristic _characteristic;
+        private readonly Ports _port;
 
         Motor(GattCharacteristic characteristic, Ports port)
         {
