@@ -12,7 +12,7 @@ namespace LegoBOOST.Classes
         private readonly GattCharacteristic _characteristic;
         private readonly Ports _port;
 
-        Motor(GattCharacteristic characteristic, Ports port)
+        internal Motor(GattCharacteristic characteristic, Ports port)
         {
             _characteristic = characteristic;
             _port = port;
