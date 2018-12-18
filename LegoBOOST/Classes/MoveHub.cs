@@ -18,6 +18,7 @@ namespace LegoBOOST.Classes
         private IMotor _motorAB;
         private ITiltSensor _tiltSensor;
         private IDistanceColorSensor _distanceColorSensor;
+        private IButton _button;
 
         internal MoveHub(GattCharacteristic gattCharacteristic)
         {
@@ -31,6 +32,7 @@ namespace LegoBOOST.Classes
             MotorAB = _motorAB;
             TiltSensor = _tiltSensor;
             DistanceColorSensor = _distanceColorSensor;
+            Button = _button;
         }
 
         public ILED LED { get; }
@@ -44,6 +46,8 @@ namespace LegoBOOST.Classes
         public ITiltSensor TiltSensor { get; }
 
         public IDistanceColorSensor DistanceColorSensor { get; }
+
+        public IButton Button { get; }
 
         private void CreateParts()
         {

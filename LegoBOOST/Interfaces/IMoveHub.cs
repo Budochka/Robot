@@ -12,5 +12,6 @@ namespace LegoBOOST.Interfaces
         IMotor MotorAB { get; }
         ITiltSensor TiltSensor { get; }
         IDistanceColorSensor DistanceColorSensor { get; }
+        IButton Button { get; }
     }
 }
