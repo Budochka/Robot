@@ -55,6 +55,9 @@ namespace LegoBOOST.Classes
             _motorB = new Motor(_characteristic, Ports.PORT_B);
             _motorAB = new Motor(_characteristic, Ports.PORT_AB);
             _led = new LED(_characteristic, Ports.PORT_LED);
+            _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
+            //Need yo understand what port to use
+//            _distanceColorSensor = new DistanceColorSensor(_characteristic, Ports.PORT_TILT_SENSOR);
         }
-}
+    }
 }

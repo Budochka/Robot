@@ -22,11 +22,35 @@ namespace LegoBOOST.Classes
 
         public async void SetSpeedTimed(uint seconds, int speed)
         {
-            byte[] bytes = new byte[255];
+            if (Math.Abs(speed) > 100)
+            {
+                throw (new Exception("Speed value should be between -100 and 100"));
+            }
 
-            IBuffer buffer = bytes.AsBuffer();
+            var bytes = PackMessageTimed(seconds, speed);
+            var buffer = bytes.AsBuffer();
 
             await _characteristic.WriteValueAsync(buffer);
+        }
+
+        private byte[] PackMessageTimed(uint seconds, int speed)
+        {
+            byte[] TRAILER = {0x64, 0x7f, 0x03}; //unknown meaning
+
+            //message to be sent to motor
+            var message = new byte[12]; //12 is packed length for timed values
+            message[0] = (byte) message.Length;
+            message[1] = 0; //by default
+            message[2] = 0x81; //by default for messages sent to port
+            message[3] = (byte) _port;
+            message[4] = 0x11; //by default
+            message[5] = 0; //need to set real values
+            message[6] = 0; //need to set real values
+            message[7] = 0; //need to set real values
+            message[8] = 0; //need to set real values
+            Array.Copy(TRAILER, 0, message, 9, TRAILER.Length);
+
+            return message;
         }
     }
 }

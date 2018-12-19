@@ -22,7 +22,10 @@ namespace LegoBOOST.Classes
 
         public IMoveHub CreateMoveHub()
         {
-            return null;
+            if (_characteristic == null)
+                throw (new Exception("Trying to create IMoveHub before connecting to bluetooth device"));
+            else
+                return new MoveHub(_characteristic);
         }
 
         public bool Connect()
