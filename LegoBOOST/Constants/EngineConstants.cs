@@ -8,6 +8,7 @@ namespace LegoBOOST.Constants
         public const ulong AdreessLEGO = 0x1653A7DE77;//95892790903
         public const string ServiceUUID = "00001624-1212-efde-1623-785feabcd123";
         public const string CharacteristicUUID = "00001624-1212-efde-1623-785feabcd123";
+        public static readonly byte[] TRAILER = new byte[] { 0x64, 0x7f, 0x03 };
     }
 
     internal enum Ports

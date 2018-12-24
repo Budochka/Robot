@@ -3,6 +3,6 @@
     public interface IMotor
     {
         int Speed { get; set; }
-        void SetSpeedTimed(uint seconds, int speed);
+        void SetSpeedTimed(ushort seconds, int speed);
     }
 }

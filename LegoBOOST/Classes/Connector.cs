@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Storage.Streams;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
 using LegoBOOST.Constants;
@@ -46,6 +47,7 @@ namespace LegoBOOST.Classes
                         if (characteristics.Characteristics.Count > 0)
                         {
                             _characteristic = characteristics.Characteristics[0];
+                            _characteristic.ValueChanged += dataCharacteristic_ValueChanged;
                         }
                     }
                 }
@@ -69,6 +71,12 @@ namespace LegoBOOST.Classes
             _bluetoothLEDevice = null;
             _deviceService = null;
             _characteristic = null;
+        }
+
+        private void dataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            byte[] data = new byte[args.CharacteristicValue.Length];
+            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
         }
     }
 }
