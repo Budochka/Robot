@@ -5,7 +5,7 @@ namespace LegoBOOST.Interfaces
 {
     public interface ILED
     {
-        bool SetColor(Color color);
+        void SetColor(Color color);
 
         event EventHandler OnColorChange;
     }

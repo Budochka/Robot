@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Storage.Streams;
 using LegoBOOST.Constants;
 using LegoBOOST.Interfaces;
 
@@ -26,15 +25,13 @@ namespace LegoBOOST.Classes
             {
                 throw (new Exception("Speed value should be between -100 and 100"));
             }
-
-            var bytes = PackMessageTimed(seconds, speed);
-            var buffer = bytes.AsBuffer();
+            var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
             await _characteristic.WriteValueAsync(buffer);
         }
 
         //dutyCycle - is value for motor cycle. Not known if it will be used
-        private byte[] PackMessageTimed(ushort seconds, int speed, byte dutyCycle = 0x64)
+        private byte[] CreateMessageTimed(ushort seconds, int speed, byte dutyCycle = 0x64)
         {
             //message to be sent to motor
             var message = new byte[12]; //12 is packed length for timed values

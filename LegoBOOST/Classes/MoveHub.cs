@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using LegoBOOST.Interfaces;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Storage.Streams;
 using LegoBOOST.Constants;
 
 namespace LegoBOOST.Classes
 {
     class MoveHub : IMoveHub
     {
-        private GattCharacteristic _characteristic;
+        private readonly GattCharacteristic _characteristic;
         private ILED _led;
         private IMotor _motorA;
         private IMotor _motorB;
@@ -33,6 +34,8 @@ namespace LegoBOOST.Classes
             TiltSensor = _tiltSensor;
             DistanceColorSensor = _distanceColorSensor;
             Button = _button;
+
+            _characteristic.ValueChanged += dataCharacteristic_ValueChanged;
         }
 
         public ILED LED { get; }
@@ -57,7 +60,76 @@ namespace LegoBOOST.Classes
             _led = new LED(_characteristic, Ports.PORT_LED);
             _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
             //Need yo understand what port to use
-//            _distanceColorSensor = new DistanceColorSensor(_characteristic, Ports.PORT_TILT_SENSOR);
+            _distanceColorSensor = new DistanceColorSensor(_characteristic, 0);
+        }
+
+        private void dataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            //we should handle only our messages
+            if (sender != _characteristic)
+                return;
+
+            byte[] data = new byte[args.CharacteristicValue.Length];
+            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+
+            int length = data[0]; //message length
+
+            switch (data[2])
+            {
+                //device information
+                case 0x01:
+                {
+                    break;
+                }
+
+                //device shutdown
+                case 0x02:
+                {
+                    break;
+                }
+
+                //? ping response
+                case 0x03:
+                {
+                    break;
+                }
+
+                //port information
+                case 0x04:
+                {
+                    break;
+                }
+
+                //error notification
+                case 0x05:
+                {
+                    break;
+                }
+
+                //subscription
+                case 0x41:
+                {
+                    break;
+                }
+
+                //sensor reading
+                case 0x45:
+                {
+                    break;
+                }
+
+                //subscription acknowledgement
+                case 0x47:
+                {
+                    break;
+                }
+
+                //port changes
+                case 0x82:
+                {
+                    break;
+                }
+            }
         }
     }
 }

@@ -94,7 +94,7 @@ namespace LegoBOOST.Constants
 
     public enum Color
     {
-        Black = 0,
+        None = 0,
         Pink,
         Purple,
         Blue,
@@ -104,8 +104,7 @@ namespace LegoBOOST.Constants
         Yellow,
         Orange,
         Red,
-        White,
-        None = 0xFF
+        White
     }
 
     public enum MotorGroup
