@@ -35,7 +35,7 @@ namespace LegoBOOST.Classes
             DistanceColorSensor = _distanceColorSensor;
             Button = _button;
 
-            _characteristic.ValueChanged += dataCharacteristic_ValueChanged;
+            _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
         }
 
         public ILED LED { get; }
@@ -63,7 +63,42 @@ namespace LegoBOOST.Classes
             _distanceColorSensor = new DistanceColorSensor(_characteristic, 0);
         }
 
-        private void dataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        private void HandleDeviceInfo(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleShutDown()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandlePortInfo(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandlePortCmdError(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleSensorSubscribeAck(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleSensorData(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandlePortStatus(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             //we should handle only our messages
             if (sender != _characteristic)
@@ -74,59 +109,66 @@ namespace LegoBOOST.Classes
 
             int length = data[0]; //message length
 
-            switch (data[2])
+            switch ((PacketType)data[2])
             {
                 //device information
-                case 0x01:
+                case PacketType.MSG_DEVICE_INFO:
                 {
+                    HandleDeviceInfo(data);
                     break;
                 }
 
                 //device shutdown
-                case 0x02:
+                case PacketType.MSG_DEVICE_SHUTDOWN:
                 {
+                    HandleShutDown();
                     break;
                 }
 
                 //? ping response
-                case 0x03:
+                case PacketType.MSG_PING_RESPONSE:
                 {
                     break;
                 }
 
                 //port information
-                case 0x04:
+                case PacketType.MSG_PORT_INFO:
                 {
+                    HandlePortInfo(data);
                     break;
                 }
 
                 //error notification
-                case 0x05:
+                case PacketType.MSG_PORT_CMD_ERROR:
                 {
+                    HandlePortCmdError(data);
                     break;
                 }
 
                 //subscription
-                case 0x41:
+                case PacketType.MSG_SENSOR_SUBSCRIBE:
                 {
                     break;
                 }
 
                 //sensor reading
-                case 0x45:
+                case PacketType.MSG_SENSOR_DATA:
                 {
+                    HandleSensorData(data);
                     break;
                 }
 
                 //subscription acknowledgement
-                case 0x47:
+                case PacketType.MSG_SENSOR_SUBSCRIBE_ACK:
                 {
+                    HandleSensorSubscribeAck(data);
                     break;
                 }
 
                 //port changes
-                case 0x82:
+                case PacketType.MSG_PORT_STATUS:
                 {
+                    HandlePortStatus(data);
                     break;
                 }
             }
