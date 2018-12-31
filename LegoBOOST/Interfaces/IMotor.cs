@@ -4,5 +4,6 @@
     {
         int Speed { get; set; }
         void SetSpeedTimed(ushort seconds, int speed);
+        void SetSpeedTimedAsync(ushort seconds, int speed);
     }
 }

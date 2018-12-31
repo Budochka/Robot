@@ -3,6 +3,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using LegoBOOST.Constants;
+using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
 
 namespace LegoBOOST.Classes
@@ -20,6 +21,14 @@ namespace LegoBOOST.Classes
         }
 
         public async void SetColor(Color color)
+        {
+            _color = color;
+            var buffer = CreateMessage(color).AsBuffer();
+
+            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
+        }
+
+        public async void SetColorAsync(Color color)
         {
             _color = color;
             var buffer = CreateMessage(color).AsBuffer();

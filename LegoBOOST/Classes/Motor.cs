@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
+using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
 
 namespace LegoBOOST.Classes
@@ -19,6 +20,18 @@ namespace LegoBOOST.Classes
 
         public int Speed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public async void SetSpeedTimedAsync(ushort seconds, int speed)
+        {
+            if (Math.Abs(speed) > 100)
+            {
+                throw (new Exception("Speed value should be between -100 and 100"));
+            }
+            var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
+
+            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
+            await _characteristic.WriteValueAsync(buffer);
+        }
+
         public async void SetSpeedTimed(ushort seconds, int speed)
         {
             if (Math.Abs(speed) > 100)
@@ -27,6 +40,7 @@ namespace LegoBOOST.Classes
             }
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
+            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
             await _characteristic.WriteValueAsync(buffer);
         }
 

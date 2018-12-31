@@ -47,6 +47,7 @@ namespace LegoBOOST.Classes
                         if (characteristics.Characteristics.Count > 0)
                         {
                             _characteristic = characteristics.Characteristics[0];
+                            return true;
                         }
                     }
                 }
