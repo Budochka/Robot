@@ -1,7 +1,7 @@
 ﻿using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
+using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
-using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -15,7 +15,7 @@ namespace LegoBOOST.Classes
             _characteristic = characteristic;
             _port = port;
 
-            LogManager.GetCurrentClassLogger().Debug("TiltSensor constructor called");
+            LoggerHelper.Instance.Debug("TiltSensor constructor called");
         }
     }
 }

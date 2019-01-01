@@ -4,8 +4,10 @@ using NLog.Targets;
 
 namespace LegoBOOST.Helpers
 {
-    static class LoggerHelper
+    internal static class LoggerHelper
     {
+        public static Logger Instance { get; private set; }
+
         static LoggerHelper()
         {
             // Step 1. Create configuration object 
@@ -21,7 +23,7 @@ namespace LegoBOOST.Helpers
             // Step 3. Set target properties 
             consoleTarget.Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}";
             string tempPath = System.IO.Path.GetTempPath();
-            fileTarget.FileName = tempPath + "\\log_legoboost.txt";
+            fileTarget.FileName = tempPath + "log_legoboost.txt";
             fileTarget.Layout = "${message}";
 
             // Step 4. Define rules
@@ -30,6 +32,8 @@ namespace LegoBOOST.Helpers
 
             // Step 5. Activate the configuration
             LogManager.Configuration = config;
+
+            Instance = LogManager.GetCurrentClassLogger();
         }
     }
 }

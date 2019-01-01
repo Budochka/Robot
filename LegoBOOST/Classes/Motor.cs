@@ -4,7 +4,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
-using NLog;
+using LegoBOOST.Helpers;
 
 namespace LegoBOOST.Classes
 {
@@ -18,7 +18,7 @@ namespace LegoBOOST.Classes
             _characteristic = characteristic;
             _port = port;
 
-            LogManager.GetCurrentClassLogger().Debug("Motor constructor called");
+            LoggerHelper.Instance.Debug("Motor constructor called");
         }
 
         public int Speed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -32,10 +32,10 @@ namespace LegoBOOST.Classes
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
             await _characteristic.WriteValueAsync(buffer);
 
-            LogManager.GetCurrentClassLogger().Debug($"Motor::SetSpeedTimedAsync seconds = {seconds}, speed = {speed}");
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync seconds = {seconds}, speed = {speed}");
         }
 
-        public async void SetSpeedTimed(ushort seconds, int speed)
+        public void SetSpeedTimed(ushort seconds, int speed)
         {
             if (Math.Abs(speed) > 100)
             {
@@ -43,7 +43,7 @@ namespace LegoBOOST.Classes
             }
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
-            LogManager.GetCurrentClassLogger().Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
 
             AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
         }
@@ -69,7 +69,7 @@ namespace LegoBOOST.Classes
             message[8] = dutyCycle; 
             Array.Copy(ConnectionConstants.TRAILER, 0, message, 9, ConnectionConstants.TRAILER.Length);
 
-            LogManager.GetCurrentClassLogger().Debug($"Motor::Message {BitConverter.ToString(message)} created");
+            LoggerHelper.Instance.Debug($"Motor::Message {BitConverter.ToString(message)} created");
 
             return message;
         }

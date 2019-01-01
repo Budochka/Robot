@@ -4,7 +4,6 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
 using LegoBOOST.Constants;
-using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -20,7 +19,7 @@ namespace LegoBOOST.Classes
             _deviceService = null;
             _characteristic = null;
 
-            LogManager.GetCurrentClassLogger().Debug("Connector::Connector called");
+            LoggerHelper.Instance.Debug("Connector::Connector called");
         }
 
         public IMoveHub CreateMoveHub()
@@ -28,12 +27,12 @@ namespace LegoBOOST.Classes
             if (_characteristic == null)
             {
                 var s = "Trying to create IMoveHub before connecting to bluetooth device";
-                LogManager.GetCurrentClassLogger().Error(s);
+                LoggerHelper.Instance.Error(s);
                 throw (new Exception(s));
             }
             else
             {
-                LogManager.GetCurrentClassLogger().Debug("Connector::CreateMoveHub called successully");
+                LoggerHelper.Instance.Debug("Connector::CreateMoveHub called successully");
                 return new MoveHub(_characteristic);
             }
         }
@@ -56,7 +55,7 @@ namespace LegoBOOST.Classes
                         if (characteristics.Characteristics.Count > 0)
                         {
                             _characteristic = characteristics.Characteristics[0];
-                            LogManager.GetCurrentClassLogger().Debug("Connector::Connect characteristic created");
+                            LoggerHelper.Instance.Debug("Connector::Connect characteristic created");
                             return true;
                         }
                     }
@@ -68,7 +67,7 @@ namespace LegoBOOST.Classes
                 if ((uint)e.HResult == 0x800710df)
                 {
                     var s = "ERROR_DEVICE_NOT_AVAILABLE because the Bluetooth radio is not on";
-                    LogManager.GetCurrentClassLogger().Error(s);
+                    LoggerHelper.Instance.Error(s);
                     throw (new Exception(s, e));
                 }
                 throw;
@@ -84,7 +83,7 @@ namespace LegoBOOST.Classes
             _deviceService = null;
             _characteristic = null;
 
-            LogManager.GetCurrentClassLogger().Debug("Connector:Disconnect called");
+            LoggerHelper.Instance.Debug("Connector:Disconnect called");
         }
     }
 }

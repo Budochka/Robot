@@ -2,7 +2,7 @@
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
 using LegoBOOST.Interfaces;
-using NLog;
+using LegoBOOST.Helpers;
 
 namespace LegoBOOST.Classes
 {
@@ -16,7 +16,7 @@ namespace LegoBOOST.Classes
             _characteristic = characteristic;
             _port = port;
 
-            LogManager.GetCurrentClassLogger().Debug("DistanceColorSensor constructor called");
+            LoggerHelper.Instance.Debug("DistanceColorSensor constructor called");
         }
 
         public event EventHandler<SensorEventArgs> OnChange;

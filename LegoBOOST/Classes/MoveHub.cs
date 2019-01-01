@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegoBOOST.Interfaces;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
 using LegoBOOST.Constants;
-using NLog;
+using LegoBOOST.Helpers;
 
 namespace LegoBOOST.Classes
 {
@@ -38,7 +34,7 @@ namespace LegoBOOST.Classes
 
             _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
 
-            LogManager.GetCurrentClassLogger().Debug("MotorHub constructor called");
+            LoggerHelper.Instance.Debug("MotorHub constructor called");
         }
 
         public ILED LED { get; }
@@ -65,7 +61,7 @@ namespace LegoBOOST.Classes
             //Need yo understand what port to use
             _distanceColorSensor = new DistanceColorSensor(_characteristic, 0);
 
-            LogManager.GetCurrentClassLogger().Debug("MotorHub::CreateParts called");
+            LoggerHelper.Instance.Debug("MotorHub::CreateParts called");
         }
 
         private void HandleDeviceInfo(byte[] data)
@@ -112,7 +108,7 @@ namespace LegoBOOST.Classes
             byte[] data = new byte[args.CharacteristicValue.Length];
             DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
 
-            LogManager.GetCurrentClassLogger().Debug($"MotorHub::DataCharacteristic_ValueChanged notification received {BitConverter.ToString(data)}");
+            LoggerHelper.Instance.Debug($"MotorHub::DataCharacteristic_ValueChanged notification received {BitConverter.ToString(data)}");
 
             int length = data[0]; //message length
 
