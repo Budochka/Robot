@@ -4,6 +4,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
+using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -16,6 +17,8 @@ namespace LegoBOOST.Classes
         {
             _characteristic = characteristic;
             _port = port;
+
+            LogManager.GetCurrentClassLogger().Debug("Motor constructor called");
         }
 
         public int Speed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -27,9 +30,9 @@ namespace LegoBOOST.Classes
                 throw (new Exception("Speed value should be between -100 and 100"));
             }
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
-
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
             await _characteristic.WriteValueAsync(buffer);
+
+            LogManager.GetCurrentClassLogger().Debug($"Motor::SetSpeedTimedAsync seconds = {seconds}, speed = {speed}");
         }
 
         public async void SetSpeedTimed(ushort seconds, int speed)
@@ -40,8 +43,9 @@ namespace LegoBOOST.Classes
             }
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
+            LogManager.GetCurrentClassLogger().Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
+
             AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
-            await _characteristic.WriteValueAsync(buffer);
         }
 
         //dutyCycle - is value for motor cycle. Not known if it will be used
@@ -64,6 +68,8 @@ namespace LegoBOOST.Classes
 
             message[8] = dutyCycle; 
             Array.Copy(ConnectionConstants.TRAILER, 0, message, 9, ConnectionConstants.TRAILER.Length);
+
+            LogManager.GetCurrentClassLogger().Debug($"Motor::Message {BitConverter.ToString(message)} created");
 
             return message;
         }

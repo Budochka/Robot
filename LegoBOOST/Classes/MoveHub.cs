@@ -7,6 +7,7 @@ using LegoBOOST.Interfaces;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
 using LegoBOOST.Constants;
+using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -36,6 +37,8 @@ namespace LegoBOOST.Classes
             Button = _button;
 
             _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
+
+            LogManager.GetCurrentClassLogger().Debug("MotorHub constructor called");
         }
 
         public ILED LED { get; }
@@ -61,6 +64,8 @@ namespace LegoBOOST.Classes
             _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
             //Need yo understand what port to use
             _distanceColorSensor = new DistanceColorSensor(_characteristic, 0);
+
+            LogManager.GetCurrentClassLogger().Debug("MotorHub::CreateParts called");
         }
 
         private void HandleDeviceInfo(byte[] data)
@@ -106,6 +111,8 @@ namespace LegoBOOST.Classes
 
             byte[] data = new byte[args.CharacteristicValue.Length];
             DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+
+            LogManager.GetCurrentClassLogger().Debug($"MotorHub::DataCharacteristic_ValueChanged notification received {BitConverter.ToString(data)}");
 
             int length = data[0]; //message length
 

@@ -1,10 +1,10 @@
 ﻿using System;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Storage.Streams;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
 using LegoBOOST.Constants;
+using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -19,14 +19,23 @@ namespace LegoBOOST.Classes
             _bluetoothLEDevice = null;
             _deviceService = null;
             _characteristic = null;
+
+            LogManager.GetCurrentClassLogger().Debug("Connector::Connector called");
         }
 
         public IMoveHub CreateMoveHub()
         {
             if (_characteristic == null)
-                throw (new Exception("Trying to create IMoveHub before connecting to bluetooth device"));
+            {
+                var s = "Trying to create IMoveHub before connecting to bluetooth device";
+                LogManager.GetCurrentClassLogger().Error(s);
+                throw (new Exception(s));
+            }
             else
+            {
+                LogManager.GetCurrentClassLogger().Debug("Connector::CreateMoveHub called successully");
                 return new MoveHub(_characteristic);
+            }
         }
 
         public bool Connect()
@@ -47,6 +56,7 @@ namespace LegoBOOST.Classes
                         if (characteristics.Characteristics.Count > 0)
                         {
                             _characteristic = characteristics.Characteristics[0];
+                            LogManager.GetCurrentClassLogger().Debug("Connector::Connect characteristic created");
                             return true;
                         }
                     }
@@ -57,7 +67,9 @@ namespace LegoBOOST.Classes
                 //0x800710df - ERROR_DEVICE_NOT_AVAILABLE because the Bluetooth radio is not on
                 if ((uint)e.HResult == 0x800710df)
                 {
-                    throw (new Exception("ERROR_DEVICE_NOT_AVAILABLE because the Bluetooth radio is not on", e));
+                    var s = "ERROR_DEVICE_NOT_AVAILABLE because the Bluetooth radio is not on";
+                    LogManager.GetCurrentClassLogger().Error(s);
+                    throw (new Exception(s, e));
                 }
                 throw;
             }
@@ -71,6 +83,8 @@ namespace LegoBOOST.Classes
             _bluetoothLEDevice = null;
             _deviceService = null;
             _characteristic = null;
+
+            LogManager.GetCurrentClassLogger().Debug("Connector:Disconnect called");
         }
     }
 }

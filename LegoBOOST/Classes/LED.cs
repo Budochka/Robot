@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
+using NLog;
 
 namespace LegoBOOST.Classes
 {
@@ -18,6 +19,8 @@ namespace LegoBOOST.Classes
         {
             _characteristic = characteristic;
             _port = port;
+
+            LogManager.GetCurrentClassLogger().Debug("Button constructor called");
         }
 
         public async void SetColor(Color color)
@@ -26,6 +29,8 @@ namespace LegoBOOST.Classes
             var buffer = CreateMessage(color).AsBuffer();
 
             AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
+
+            LogManager.GetCurrentClassLogger().Debug($"LED::SetColor color = {color} called");
         }
 
         public async void SetColorAsync(Color color)
@@ -34,6 +39,8 @@ namespace LegoBOOST.Classes
             var buffer = CreateMessage(color).AsBuffer();
 
             await _characteristic.WriteValueAsync(buffer);
+
+            LogManager.GetCurrentClassLogger().Debug("LED::SetColorAsync called");
         }
 
         public event EventHandler OnColorChange;
@@ -50,6 +57,8 @@ namespace LegoBOOST.Classes
             message[5] = 0x51; //by default
             message[6] = 0x00; //by default
             message[7] = (byte)color; //color value
+
+            LogManager.GetCurrentClassLogger().Debug($"LED::Message {BitConverter.ToString(message)} created");
 
             return message;
         }
