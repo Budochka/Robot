@@ -24,7 +24,7 @@ namespace LegoBOOST.Helpers
             consoleTarget.Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}";
             string tempPath = System.IO.Path.GetTempPath();
             fileTarget.FileName = tempPath + "log_legoboost.txt";
-            fileTarget.Layout = "${message}";
+            fileTarget.Layout = @"${date:format=HH\:mm\:ss} ${message}";
 
             // Step 4. Define rules
             config.AddRule(LogLevel.Info, LogLevel.Fatal, consoleTarget);

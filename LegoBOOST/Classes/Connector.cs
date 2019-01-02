@@ -55,10 +55,34 @@ namespace LegoBOOST.Classes
                         if (characteristics.Characteristics.Count > 0)
                         {
                             _characteristic = characteristics.Characteristics[0];
+                            GattCharacteristicProperties properties = _characteristic.CharacteristicProperties;
+                            LoggerHelper.Instance.Debug("Characteristic properties:");
+                            foreach (GattCharacteristicProperties property in Enum.GetValues(typeof(GattCharacteristicProperties)))
+                            {
+                                if (properties.HasFlag(property))
+                                {
+                                    LoggerHelper.Instance.Debug($"{property} ");
+                                }
+                            }
                             LoggerHelper.Instance.Debug("Connector::Connect characteristic created");
                             return true;
                         }
+                        else
+                        {
+                            LoggerHelper.Instance.Debug("Connector::Connect characteristic not found");
+                            return false;
+                        }
                     }
+                    else
+                    {
+                        LoggerHelper.Instance.Debug("Connector::Connect service not found");
+                        return false;
+                    }
+                }
+                else
+                {
+                    LoggerHelper.Instance.Debug("Connector::Connect device not found");
+                    return false;
                 }
             }
             catch (Exception e)
@@ -72,7 +96,6 @@ namespace LegoBOOST.Classes
                 }
                 throw;
             }
-
             return false;
         }
 

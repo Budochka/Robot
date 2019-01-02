@@ -20,12 +20,8 @@ namespace BlueToothTest
             if (!connector.Connect())
                 return;
 
-            var moveHub = connector.CreateMoveHub();
-            var motorA = moveHub?.MotorA;
-            motorA?.SetSpeedTimed(10, 100);
-
-            var motorB = moveHub?.MotorB;
-            motorB?.SetSpeedTimed(10, 100);
+            var movehub = connector.CreateMoveHub();
+            var motor = movehub.MotorAB;
 
             // Close on key press
             ReadLine();

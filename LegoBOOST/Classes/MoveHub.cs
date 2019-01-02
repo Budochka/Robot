@@ -32,7 +32,19 @@ namespace LegoBOOST.Classes
             DistanceColorSensor = _distanceColorSensor;
             Button = _button;
 
-            _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
+            //subscribe to the GATT characteristic notification
+            GattCommunicationStatus status = AsyncHelpers.RunSync<GattCommunicationStatus>(()
+                =>_characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify).AsTask());
+
+            if (status == GattCommunicationStatus.Success)
+            {
+                LoggerHelper.Instance.Debug("Subscribing to the Indication/Notification");
+                _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
+            }
+            else
+            {
+                LoggerHelper.Instance.Debug("MoveHub::MoveHub set notification failed: {status}");
+            }
 
             LoggerHelper.Instance.Debug("MotorHub constructor called");
         }
@@ -117,14 +129,14 @@ namespace LegoBOOST.Classes
                 //device information
                 case PacketType.MSG_DEVICE_INFO:
                 {
-                    HandleDeviceInfo(data);
+                    //HandleDeviceInfo(data);
                     break;
                 }
 
                 //device shutdown
                 case PacketType.MSG_DEVICE_SHUTDOWN:
                 {
-                    HandleShutDown();
+                    //HandleShutDown();
                     break;
                 }
 
@@ -137,14 +149,14 @@ namespace LegoBOOST.Classes
                 //port information
                 case PacketType.MSG_PORT_INFO:
                 {
-                    HandlePortInfo(data);
+                    //HandlePortInfo(data);
                     break;
                 }
 
                 //error notification
                 case PacketType.MSG_PORT_CMD_ERROR:
                 {
-                    HandlePortCmdError(data);
+                    //HandlePortCmdError(data);
                     break;
                 }
 
@@ -157,21 +169,21 @@ namespace LegoBOOST.Classes
                 //sensor reading
                 case PacketType.MSG_SENSOR_DATA:
                 {
-                    HandleSensorData(data);
+                    //HandleSensorData(data);
                     break;
                 }
 
                 //subscription acknowledgement
                 case PacketType.MSG_SENSOR_SUBSCRIBE_ACK:
                 {
-                    HandleSensorSubscribeAck(data);
+                    //HandleSensorSubscribeAck(data);
                     break;
                 }
 
                 //port changes
                 case PacketType.MSG_PORT_STATUS:
                 {
-                    HandlePortStatus(data);
+                    //HandlePortStatus(data);
                     break;
                 }
             }
