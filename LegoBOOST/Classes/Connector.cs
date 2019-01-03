@@ -22,7 +22,7 @@ namespace LegoBOOST.Classes
             LoggerHelper.Instance.Debug("Connector::Connector called");
         }
 
-        public IMoveHub CreateMoveHub()
+        public IMoveHub CreateMoveHub(Ports thirdMotor, Ports distanceColorSensor)
         {
             if (_characteristic == null)
             {
@@ -33,7 +33,7 @@ namespace LegoBOOST.Classes
             else
             {
                 LoggerHelper.Instance.Debug("Connector::CreateMoveHub called successully");
-                return new MoveHub(_characteristic);
+                return new MoveHub(_characteristic, thirdMotor, distanceColorSensor);
             }
         }
 

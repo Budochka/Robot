@@ -8,10 +8,16 @@ namespace LegoBOOST.Constants
         public const ulong AdreessLEGO = 0x1653A7DE77;//95892790903
         public const string ServiceUUID = "00001623-1212-efde-1623-785feabcd123";
         public const string CharacteristicUUID = "00001624-1212-efde-1623-785feabcd123";
+
+        //messages 
         public static readonly byte[] TRAILER = new byte[] { 0x64, 0x7f, 0x03 };
+        //need to set 4th byte to exact port for subscription
+        public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 }; 
+        public static readonly byte[] CMD_SUBSCRIBE_ANGLE = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01 };
+        public static readonly byte[] CMD_SUBSCRIBE_SPEED = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01 };
     }
 
-    internal enum Ports
+    public enum Ports
     {
         PORT_C = 0x01,
         PORT_D = 0x02,
@@ -20,8 +26,8 @@ namespace LegoBOOST.Constants
         PORT_B = 0x38,
         PORT_AB = 0x39,
         PORT_TILT_SENSOR = 0x3A,
-        PORT_AMPERAGE = 0x3B,
-        PORT_VOLTAGE = 0x3C
+        PORT_AMPERAGE = 0x3B, //never used
+        PORT_VOLTAGE = 0x3C //never used
     }
 
     internal enum PacketType

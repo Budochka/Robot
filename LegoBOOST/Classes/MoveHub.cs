@@ -14,20 +14,22 @@ namespace LegoBOOST.Classes
         private IMotor _motorA;
         private IMotor _motorB;
         private IMotor _motorAB;
+        private IMotor _motor3;
         private ITiltSensor _tiltSensor;
         private IDistanceColorSensor _distanceColorSensor;
         private IButton _button;
 
-        internal MoveHub(GattCharacteristic gattCharacteristic)
+        internal MoveHub(GattCharacteristic gattCharacteristic, Ports thirdMotor, Ports distanceColorSensor)
         {
             _characteristic = gattCharacteristic;
 
-            CreateParts();
+            CreateParts(thirdMotor, distanceColorSensor);
 
             LED = _led;
             MotorA = _motorA;
             MotorB = _motorB;
             MotorAB = _motorAB;
+            Motor3 = _motor3;
             TiltSensor = _tiltSensor;
             DistanceColorSensor = _distanceColorSensor;
             Button = _button;
@@ -43,7 +45,7 @@ namespace LegoBOOST.Classes
             }
             else
             {
-                LoggerHelper.Instance.Debug("MoveHub::MoveHub set notification failed: {status}");
+                LoggerHelper.Instance.Debug($"MoveHub::MoveHub set notification failed: {status}");
             }
 
             LoggerHelper.Instance.Debug("MotorHub constructor called");
@@ -57,21 +59,25 @@ namespace LegoBOOST.Classes
 
         public IMotor MotorAB { get; }
 
+        public IMotor Motor3 { get; }
+
         public ITiltSensor TiltSensor { get; }
 
         public IDistanceColorSensor DistanceColorSensor { get; }
 
         public IButton Button { get; }
 
-        private void CreateParts()
+        private void CreateParts(Ports thirdMotor, Ports distanceColorSensor)
         {
             _motorA = new Motor(_characteristic, Ports.PORT_A);
             _motorB = new Motor(_characteristic, Ports.PORT_B);
             _motorAB = new Motor(_characteristic, Ports.PORT_AB);
             _led = new LED(_characteristic, Ports.PORT_LED);
             _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
-            //Need yo understand what port to use
-            _distanceColorSensor = new DistanceColorSensor(_characteristic, 0);
+
+            //creating devices with variable port numbers
+            _motor3 = new Motor(_characteristic, thirdMotor);
+            _distanceColorSensor = new DistanceColorSensor(_characteristic, distanceColorSensor);
 
             LoggerHelper.Instance.Debug("MotorHub::CreateParts called");
         }

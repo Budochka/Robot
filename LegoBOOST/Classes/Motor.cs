@@ -21,8 +21,6 @@ namespace LegoBOOST.Classes
             LoggerHelper.Instance.Debug("Motor constructor called");
         }
 
-        public int Speed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public async void SetSpeedTimedAsync(ushort seconds, int speed)
         {
             if (Math.Abs(speed) > 100)
@@ -34,6 +32,9 @@ namespace LegoBOOST.Classes
 
             LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync seconds = {seconds}, speed = {speed}");
         }
+
+        public event EventHandler OnActionStart;
+        public event EventHandler OnActionFinished;
 
         public void SetSpeedTimed(ushort seconds, int speed)
         {

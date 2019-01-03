@@ -4,7 +4,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
-using LegoBOOST.Helpers;
 
 namespace LegoBOOST.Classes
 {
