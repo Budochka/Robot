@@ -8,6 +8,6 @@ namespace LegoBOOST.Interfaces
         void SetColor(Color color);
         void SetColorAsync(Color color);
 
-        event EventHandler OnColorChange;
+        event EventHandler OnColorChanged;
     }
 }

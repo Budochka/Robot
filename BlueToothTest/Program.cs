@@ -15,10 +15,10 @@ namespace BlueToothTest
 
             var movehub = connector.CreateMoveHub(Ports.PORT_D, Ports.PORT_C);
             var motor = movehub.Motor3;
-            motor.SetSpeedTimedAsync(10, 100);
+//            motor.SetSpeedTimedAsync(10, 100);
 
             var LED = movehub.LED;
-            LED.SetColor(Color.Red);
+//            LED.SetColor(Color.Red);
 
             // Close on key press
             ReadLine();

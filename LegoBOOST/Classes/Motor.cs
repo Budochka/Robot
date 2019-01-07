@@ -21,6 +21,27 @@ namespace LegoBOOST.Classes
             LoggerHelper.Instance.Debug("Motor constructor called");
         }
 
+        internal void FireEvent(byte data)
+        {
+            switch (data)
+            {
+                case 0x01:
+                {
+                    EventHandler handler = OnActionStart;
+                    handler?.Invoke(this, EventArgs.Empty);
+                    LoggerHelper.Instance.Debug("Motor::FireEvent ActionStart");
+                    break;
+                }
+                case 0x0a:
+                {
+                    EventHandler handler = OnActionFinished;
+                    handler?.Invoke(this, EventArgs.Empty);
+                    LoggerHelper.Instance.Debug("Motor::FireEvent ActionFinished");
+                    break;
+                }
+            }
+        }
+
         public async void SetSpeedTimedAsync(ushort seconds, int speed)
         {
             if (Math.Abs(speed) > 100)

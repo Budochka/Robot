@@ -21,6 +21,12 @@ namespace LegoBOOST.Classes
             LoggerHelper.Instance.Debug("Button constructor called");
         }
 
+        internal void FireOnColorChanged()
+        {
+            EventHandler handler = OnColorChanged;
+            handler?.Invoke(this, EventArgs.Empty);
+        }
+
         public void SetColor(Color color)
         {
             _color = color;
@@ -41,7 +47,7 @@ namespace LegoBOOST.Classes
             LoggerHelper.Instance.Debug("LED::SetColorAsync called");
         }
 
-        public event EventHandler OnColorChange;
+        public event EventHandler OnColorChanged;
 
         private byte[] CreateMessage(Color color)
         {

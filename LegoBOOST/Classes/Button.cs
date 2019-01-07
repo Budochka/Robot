@@ -21,5 +21,25 @@ namespace LegoBOOST.Classes
 
         public event EventHandler OnButtonPressed;
         public event EventHandler OnButtonReleased;
+
+        internal void FireEvent(byte data)
+        {
+            switch (data)
+            {
+                case 0x00:
+                {
+                    EventHandler handler = OnButtonPressed;
+                    handler?.Invoke(this, EventArgs.Empty);
+                    break;
+                }
+
+                case 0x01:
+                {
+                    EventHandler handler = OnButtonReleased;
+                    handler?.Invoke(this, EventArgs.Empty);
+                    break;
+                }
+            }
+        }
     }
 }

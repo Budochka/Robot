@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Storage.Pickers.Provider;
 using LegoBOOST.Constants;
 using LegoBOOST.Interfaces;
 using LegoBOOST.Helpers;
@@ -11,6 +12,14 @@ namespace LegoBOOST.Classes
     {
         private readonly GattCharacteristic _characteristic;
         private readonly Ports _port;
+
+        internal void FileEvent(Color color, int distance)
+        {
+            SensorEventArgs args = new SensorEventArgs() {ColorDetected = color, Distance = distance};
+            var handler = OnChange;
+            handler?.Invoke(this, args);
+            LoggerHelper.Instance.Debug("DistanceColorSensor::FireEvent OnChange");
+        }
 
         internal DistanceColorSensor(GattCharacteristic characteristic, Ports port)
         {

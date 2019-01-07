@@ -10,18 +10,23 @@ namespace LegoBOOST.Classes
     class MoveHub : IMoveHub
     {
         private readonly GattCharacteristic _characteristic;
-        private ILED _led;
-        private IMotor _motorA;
-        private IMotor _motorB;
-        private IMotor _motorAB;
-        private IMotor _motor3;
-        private ITiltSensor _tiltSensor;
-        private IDistanceColorSensor _distanceColorSensor;
-        private IButton _button;
+        private LED _led;
+        private Motor _motorA;
+        private Motor _motorB;
+        private Motor _motorAB;
+        private Motor _motor3;
+        private TiltSensor _tiltSensor;
+        private DistanceColorSensor _distanceColorSensor;
+        private Button _button;
+
+        private readonly Ports _thirdMotorPort;
+        private readonly Ports _distanceColorSensorPort;
 
         internal MoveHub(GattCharacteristic gattCharacteristic, Ports thirdMotor, Ports distanceColorSensor)
         {
             _characteristic = gattCharacteristic;
+            _thirdMotorPort = thirdMotor;
+            _distanceColorSensorPort = distanceColorSensor;
 
             CreateParts(thirdMotor, distanceColorSensor);
 
@@ -94,7 +99,13 @@ namespace LegoBOOST.Classes
 
         private void HandlePortInfo(byte[] data)
         {
-            throw new NotImplementedException();
+            switch ((DeviceTypes)data[5])
+            {
+                case DeviceTypes.DEV_DCS:
+                {
+                    break;
+                }
+            }
         }
 
         private void HandlePortCmdError(byte[] data)
@@ -109,12 +120,48 @@ namespace LegoBOOST.Classes
 
         private void HandleSensorData(byte[] data)
         {
-            throw new NotImplementedException();
+            if ((Ports)data[3] == _distanceColorSensorPort)
+            {
+                Color color = (Color) data[4];
+                int distance = data[5];
+            }
         }
 
         private void HandlePortStatus(byte[] data)
         {
-            throw new NotImplementedException();
+            switch ((Ports)data[3])
+            {
+                case Ports.PORT_LED:
+                {
+                    if (data[4] == 0x0a)
+                    {
+                        _led?.FireOnColorChanged();
+                        LoggerHelper.Instance.Debug("MotorHub::HandlePortStatus LED color changed");
+                    }
+                    break;
+                }
+
+                case Ports.PORT_A:
+                {
+                    _motorA?.FireEvent(data[4]);
+                    LoggerHelper.Instance.Debug("MotorHub::HandlePortStatus motor A event fired");
+                    break;
+                }
+
+                case Ports.PORT_B:
+                {
+                    _motorB?.FireEvent(data[4]);
+                    LoggerHelper.Instance.Debug("MotorHub::HandlePortStatus motor B event fired");
+                    break;
+                }
+
+                case Ports.PORT_AB:
+                {
+                    _motorAB?.FireEvent(data[4]);
+                    LoggerHelper.Instance.Debug("MotorHub::HandlePortStatus motor AB event fired");
+                    break;
+                }
+            }
         }
 
         private void DataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
@@ -155,7 +202,7 @@ namespace LegoBOOST.Classes
                 //port information
                 case PacketType.MSG_PORT_INFO:
                 {
-                    //HandlePortInfo(data);
+                    HandlePortInfo(data);
                     break;
                 }
 
@@ -175,7 +222,7 @@ namespace LegoBOOST.Classes
                 //sensor reading
                 case PacketType.MSG_SENSOR_DATA:
                 {
-                    //HandleSensorData(data);
+                    HandleSensorData(data);
                     break;
                 }
 
@@ -189,7 +236,7 @@ namespace LegoBOOST.Classes
                 //port changes
                 case PacketType.MSG_PORT_STATUS:
                 {
-                    //HandlePortStatus(data);
+                    HandlePortStatus(data);
                     break;
                 }
             }
