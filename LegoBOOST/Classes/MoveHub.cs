@@ -124,6 +124,7 @@ namespace LegoBOOST.Classes
             {
                 Color color = (Color) data[4];
                 int distance = data[5];
+                _distanceColorSensor.FileEvent(color, distance);
             }
         }
 
