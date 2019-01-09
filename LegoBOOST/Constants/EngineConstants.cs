@@ -1,4 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
+
+using System;
+
 namespace LegoBOOST.Constants
 {
     static class ConnectionConstants
@@ -15,6 +18,10 @@ namespace LegoBOOST.Constants
         public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 }; 
         public static readonly byte[] CMD_SUBSCRIBE_ANGLE = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01 };
         public static readonly byte[] CMD_SUBSCRIBE_SPEED = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01 };
+        public static readonly byte[] CMD_SUBSCRIBE_BUTTON = new byte[] { 0x05, 0x00, 0x01, 0x02, 0x02 };
+
+        public static readonly byte[] EVENT_BUTTON_PRESSED = new byte[] { 0x06, 0x00, 0x01, 0x02, 0x06, 0x01 };
+        public static readonly byte[] EVENT_BUTTON_RELEASED = new byte[] { 0x06, 0x00, 0x01, 0x02, 0x06, 0x00 };
     }
 
     public enum Ports
@@ -56,13 +63,19 @@ namespace LegoBOOST.Constants
         DEV_TILT_SENSOR = 0x28
     }
 
-    internal enum Statuses
+    internal enum ActionStatuses
     {
         STATUS_STARTED = 0x01,
         STATUS_CONFLICT = 0x05,
         STATUS_FINISHED = 0x0a,
         STATUS_INPROGRESS = 0x0c,  //FIXME: not sure about description
         STATUS_INTERRUPTED = 0x0e  //FIXME:  not sure about description
+    }
+
+    internal enum ButtonStatus
+    {
+        BUTTON_RELEASED = 0x00,
+        BUTTON_PRESSED = 0x01
     }
 
     internal enum DeviceInfo

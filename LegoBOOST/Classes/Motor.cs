@@ -4,7 +4,6 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
 using LegoBOOST.Interfaces;
-using LegoBOOST.Helpers;
 
 namespace LegoBOOST.Classes
 {
@@ -23,16 +22,17 @@ namespace LegoBOOST.Classes
 
         internal void FireEvent(byte data)
         {
-            switch (data)
+            switch ((ActionStatuses)data)
             {
-                case 0x01:
+                case ActionStatuses.STATUS_STARTED:
                 {
                     EventHandler handler = OnActionStart;
                     handler?.Invoke(this, EventArgs.Empty);
                     LoggerHelper.Instance.Debug("Motor::FireEvent ActionStart");
                     break;
                 }
-                case 0x0a:
+
+                case ActionStatuses.STATUS_FINISHED:
                 {
                     EventHandler handler = OnActionFinished;
                     handler?.Invoke(this, EventArgs.Empty);

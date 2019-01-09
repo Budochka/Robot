@@ -96,7 +96,6 @@ namespace LegoBOOST.Classes
                 }
                 throw;
             }
-            return false;
         }
 
         public void Disconnect()

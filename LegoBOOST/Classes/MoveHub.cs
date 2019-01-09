@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LegoBOOST.Interfaces;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
@@ -79,6 +80,7 @@ namespace LegoBOOST.Classes
             _motorAB = new Motor(_characteristic, Ports.PORT_AB);
             _led = new LED(_characteristic, Ports.PORT_LED);
             _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
+            _button = new Button(_characteristic);
 
             //creating devices with variable port numbers
             _motor3 = new Motor(_characteristic, thirdMotor);
@@ -89,12 +91,28 @@ namespace LegoBOOST.Classes
 
         private void HandleDeviceInfo(byte[] data)
         {
-            throw new NotImplementedException();
+            LoggerHelper.Instance.Debug($"MotorHub::HandleDeviceInfo event {BitConverter.ToString(data)}");
+
+            if (data.SequenceEqual(ConnectionConstants.EVENT_BUTTON_PRESSED))
+                _button.FireEvent(ButtonStatus.BUTTON_PRESSED);
+            else if (data.SequenceEqual(ConnectionConstants.EVENT_BUTTON_RELEASED))
+                _button.FireEvent(ButtonStatus.BUTTON_RELEASED);
         }
 
         private void HandleShutDown()
         {
-            throw new NotImplementedException();
+            //unsubscribe from events
+            _characteristic.ValueChanged -= DataCharacteristic_ValueChanged;
+
+            //we should close everything, because we are shutting down!
+            _led = null;
+            _motorA = null;
+            _motorB = null;
+            _motorAB = null;
+            _motor3 = null;
+            _tiltSensor = null;
+            _distanceColorSensor = null;
+            _button = null;
         }
 
         private void HandlePortInfo(byte[] data)
@@ -124,7 +142,7 @@ namespace LegoBOOST.Classes
             {
                 Color color = (Color) data[4];
                 int distance = data[5];
-                _distanceColorSensor.FileEvent(color, distance);
+                _distanceColorSensor.FireEvent(color, distance);
             }
         }
 
@@ -134,7 +152,7 @@ namespace LegoBOOST.Classes
             {
                 case Ports.PORT_LED:
                 {
-                    if (data[4] == 0x0a)
+                    if ((ActionStatuses)data[4] == ActionStatuses.STATUS_FINISHED)
                     {
                         _led?.FireOnColorChanged();
                         LoggerHelper.Instance.Debug("MotorHub::HandlePortStatus LED color changed");
@@ -183,14 +201,14 @@ namespace LegoBOOST.Classes
                 //device information
                 case PacketType.MSG_DEVICE_INFO:
                 {
-                    //HandleDeviceInfo(data);
+                    HandleDeviceInfo(data);
                     break;
                 }
 
                 //device shutdown
                 case PacketType.MSG_DEVICE_SHUTDOWN:
                 {
-                    //HandleShutDown();
+                    HandleShutDown();
                     break;
                 }
 

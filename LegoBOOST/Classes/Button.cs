@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOST.Constants;
 using LegoBOOST.Helpers;
@@ -8,34 +9,32 @@ namespace LegoBOOST.Classes
 {
     public class Button : IButton
     {
-        private readonly GattCharacteristic _characteristic;
-        private readonly Ports _port;
-
-        internal Button(GattCharacteristic characteristic, Ports port)
+        internal Button(GattCharacteristic characteristic)
         {
-            _characteristic = characteristic;
-            _port = port;
-
             LoggerHelper.Instance.Debug("Button constructor called");
+
+            AsyncHelpers.RunSync<GattCommunicationStatus>(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
         }
 
         public event EventHandler OnButtonPressed;
         public event EventHandler OnButtonReleased;
 
-        internal void FireEvent(byte data)
+        internal void FireEvent(ButtonStatus status)
         {
-            switch (data)
+            LoggerHelper.Instance.Debug($"Button event called, status {status}");
+
+            switch (status)
             {
-                case 0x00:
+                case ButtonStatus.BUTTON_RELEASED:
                 {
-                    EventHandler handler = OnButtonPressed;
+                    EventHandler handler = OnButtonReleased;
                     handler?.Invoke(this, EventArgs.Empty);
                     break;
                 }
 
-                case 0x01:
+                case ButtonStatus.BUTTON_PRESSED:
                 {
-                    EventHandler handler = OnButtonReleased;
+                    EventHandler handler = OnButtonPressed;
                     handler?.Invoke(this, EventArgs.Empty);
                     break;
                 }
