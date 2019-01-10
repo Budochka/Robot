@@ -14,7 +14,7 @@ namespace LegoBOOST.Classes
 
         internal void FireEvent(Color color, int distance)
         {
-            SensorEventArgs args = new SensorEventArgs() {ColorDetected = color, Distance = distance};
+            DistanceColorSensorEventArgs args = new DistanceColorSensorEventArgs() {ColorDetected = color, Distance = distance};
             var handler = OnChange;
             handler?.Invoke(this, args);
             LoggerHelper.Instance.Debug("DistanceColorSensor::FireEvent OnChange");
@@ -42,6 +42,6 @@ namespace LegoBOOST.Classes
             AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
         }
 
-        public event EventHandler<SensorEventArgs> OnChange;
+        public event EventHandler<DistanceColorSensorEventArgs> OnChange;
     }
 }

@@ -3,7 +3,7 @@ using LegoBOOST.Constants;
 
 namespace LegoBOOST.Interfaces
 {
-    public class SensorEventArgs : EventArgs
+    public class DistanceColorSensorEventArgs : EventArgs
     {
         public Color ColorDetected { get; set; }
         public int Distance { get; set; }
@@ -11,6 +11,6 @@ namespace LegoBOOST.Interfaces
 
     public interface IDistanceColorSensor
     {
-        event EventHandler<SensorEventArgs> OnChange;
+        event EventHandler<DistanceColorSensorEventArgs> OnChange;
     }
 }
