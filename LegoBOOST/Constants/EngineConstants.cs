@@ -8,16 +8,19 @@ namespace LegoBOOST.Constants
     {
         public const byte PACKET_VER = 0x01;
 
-        public const ulong AdreessLEGO = 0x1653A7DE77;//95892790903
+        public const ulong AdreessLEGO = 0x1653A7DE77;
         public const string ServiceUUID = "00001623-1212-efde-1623-785feabcd123";
         public const string CharacteristicUUID = "00001624-1212-efde-1623-785feabcd123";
 
         //messages 
         public static readonly byte[] TRAILER = new byte[] { 0x64, 0x7f, 0x03 };
+        
         //need to set 4th byte to exact port for subscription
-        public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 }; 
+        public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 };
+
         public static readonly byte[] CMD_SUBSCRIBE_ANGLE = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01 };
         public static readonly byte[] CMD_SUBSCRIBE_SPEED = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01 };
+
         public static readonly byte[] CMD_SUBSCRIBE_BUTTON = new byte[] { 0x05, 0x00, 0x01, 0x02, 0x02 };
 
         public static readonly byte[] EVENT_BUTTON_PRESSED = new byte[] { 0x06, 0x00, 0x01, 0x02, 0x06, 0x01 };

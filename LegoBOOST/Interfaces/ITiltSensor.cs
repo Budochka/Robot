@@ -4,7 +4,7 @@
     {
         public interface ITiltSensor
         {
-
+            void SetNotificationMode()
         }
     }
 }

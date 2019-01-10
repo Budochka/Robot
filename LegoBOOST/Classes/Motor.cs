@@ -42,16 +42,16 @@ namespace LegoBOOST.Classes
             }
         }
 
-        public async void SetSpeedTimedAsync(ushort seconds, int speed)
+        public async void SetSpeedTimedAsync(ushort milliseconds, int speed)
         {
             if (Math.Abs(speed) > 100)
             {
                 throw (new Exception("Speed value should be between -100 and 100"));
             }
-            var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
+            var buffer = CreateMessageTimed(milliseconds, speed).AsBuffer();
             await _characteristic.WriteValueAsync(buffer);
 
-            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync seconds = {seconds}, speed = {speed}");
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync milliseconds = {milliseconds}, speed = {speed}");
         }
 
         public event EventHandler OnActionStart;
