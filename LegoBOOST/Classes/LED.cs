@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
+
+[assembly: InternalsVisibleTo("LegoBOOSTNetTests")]
 
 namespace LegoBOOSTNet.Classes
 {
@@ -33,6 +36,12 @@ namespace LegoBOOSTNet.Classes
             var buffer = CreateMessage().AsBuffer();
 
             var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
+
+            if (result != GattCommunicationStatus.Success)
+            {
+                LoggerHelper.Instance.Debug("LED::SetColor - failed to set color");
+                throw new Exception("Failed to set color");
+            }
 
             LoggerHelper.Instance.Debug($"LED::SetColor color = {color} called");
         }

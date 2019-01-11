@@ -40,6 +40,11 @@ namespace LegoBOOSTNet.Classes
             LoggerHelper.Instance.Debug($"DistanceColorSensor::SetNotifications {BitConverter.ToString(buffer)} created");
 
             var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+            if (result != GattCommunicationStatus.Success)
+            {
+                LoggerHelper.Instance.Debug("DistanceColorSensor::SetNotifications - failed to subscribe to notifications exception");
+                throw new Exception("Failed to subscribe to notifications");
+            }
         }
 
         public event EventHandler<DistanceColorSensorEventArgs> OnChange;

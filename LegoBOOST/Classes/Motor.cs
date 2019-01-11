@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOSTNet.Constants;
@@ -65,9 +66,14 @@ namespace LegoBOOSTNet.Classes
             }
             var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
-            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
-
             var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
+            if (result != GattCommunicationStatus.Success)
+            {
+                LoggerHelper.Instance.Debug("Motor::SetSpeedTimed - failed to set speed");
+                throw new Exception("Failed to set speed");
+            }
+
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
         }
 
         //dutyCycle - is value for motor cycle. Not known if it will be used

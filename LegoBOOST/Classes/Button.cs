@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
+
+[assembly: InternalsVisibleTo("LegoBOOSTNetTests")]
 
 namespace LegoBOOSTNet.Classes
 {
@@ -13,7 +16,13 @@ namespace LegoBOOSTNet.Classes
         {
             LoggerHelper.Instance.Debug("Button constructor called");
 
-            AsyncHelpers.RunSync(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
+            var result = AsyncHelpers.RunSync(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
+
+            if (result != GattCommunicationStatus.Success)
+            {
+                LoggerHelper.Instance.Debug("Button::Button - failed to subscribe to notifications exception");
+                throw new Exception("Failed to subscribe to notifications");
+            }
         }
 
         public event EventHandler OnButtonPressed;

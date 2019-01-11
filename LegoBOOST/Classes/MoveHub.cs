@@ -52,6 +52,7 @@ namespace LegoBOOSTNet.Classes
             else
             {
                 LoggerHelper.Instance.Debug($"MoveHub::MoveHub set notification failed: {status}");
+                throw new Exception("MoveHub::MoveHub set notification failed");
             }
 
             LoggerHelper.Instance.Debug("MotorHub constructor called");
