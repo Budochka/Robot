@@ -1,8 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using System;
-
-namespace LegoBOOST.Constants
+namespace LegoBOOSTNet.Constants
 {
     static class ConnectionConstants
     {

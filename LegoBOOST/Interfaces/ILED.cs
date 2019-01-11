@@ -1,7 +1,7 @@
 ﻿using System;
-using LegoBOOST.Constants;
+using LegoBOOSTNet.Constants;
 
-namespace LegoBOOST.Interfaces
+namespace LegoBOOSTNet.Interfaces
 {
     public interface ILED
     {

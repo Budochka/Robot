@@ -2,7 +2,7 @@
 using NLog.Config;
 using NLog.Targets;
 
-namespace LegoBOOST.Helpers
+namespace LegoBOOSTNet.Helpers
 {
     internal static class LoggerHelper
     {

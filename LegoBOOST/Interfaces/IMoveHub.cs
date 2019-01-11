@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LegoBOOST.Interfaces
+﻿namespace LegoBOOSTNet.Interfaces
 {
     public interface IMoveHub
     {

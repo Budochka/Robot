@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using LegoBOOST.Interfaces;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
-using LegoBOOST.Constants;
-using LegoBOOST.Helpers;
+using LegoBOOSTNet.Constants;
+using LegoBOOSTNet.Helpers;
+using LegoBOOSTNet.Interfaces;
 
-namespace LegoBOOST.Classes
+namespace LegoBOOSTNet.Classes
 {
     class MoveHub : IMoveHub
     {

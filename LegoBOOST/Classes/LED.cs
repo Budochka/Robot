@@ -1,11 +1,11 @@
 ﻿using System;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using System.Runtime.InteropServices.WindowsRuntime;
-using LegoBOOST.Constants;
-using LegoBOOST.Helpers;
-using LegoBOOST.Interfaces;
+using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using LegoBOOSTNet.Constants;
+using LegoBOOSTNet.Helpers;
+using LegoBOOSTNet.Interfaces;
 
-namespace LegoBOOST.Classes
+namespace LegoBOOSTNet.Classes
 {
     class LED : ILED
     {

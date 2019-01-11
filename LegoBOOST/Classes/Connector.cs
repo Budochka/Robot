@@ -1,11 +1,11 @@
 ﻿using System;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using LegoBOOST.Helpers;
-using LegoBOOST.Interfaces;
-using LegoBOOST.Constants;
+using LegoBOOSTNet.Constants;
+using LegoBOOSTNet.Helpers;
+using LegoBOOSTNet.Interfaces;
 
-namespace LegoBOOST.Classes
+namespace LegoBOOSTNet.Classes
 {
     public class Connector
     {

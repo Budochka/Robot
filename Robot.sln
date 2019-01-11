@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceRecognition", "VoiceRecognition\VoiceRecognition.csproj", "{B1E23333-9625-4541-8E8C-FDC22E61FF84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegoBOOST", "LegoBOOST\LegoBOOST.csproj", "{19E8FF9C-3439-41B8-9BE8-E1CD24179F3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegoBOOSTNet", "LegoBOOST\LegoBOOSTNet.csproj", "{19E8FF9C-3439-41B8-9BE8-E1CD24179F3B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueToothTest", "BlueToothTest\BlueToothTest.csproj", "{B8212FA1-E613-4E46-9794-FBD1D8E07E8A}"
 EndProject

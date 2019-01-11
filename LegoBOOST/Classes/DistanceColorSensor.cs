@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using LegoBOOST.Constants;
-using LegoBOOST.Interfaces;
-using LegoBOOST.Helpers;
+using LegoBOOSTNet.Constants;
+using LegoBOOSTNet.Helpers;
+using LegoBOOSTNet.Interfaces;
 
-namespace LegoBOOST.Classes
+namespace LegoBOOSTNet.Classes
 {
     class DistanceColorSensor : IDistanceColorSensor
     {

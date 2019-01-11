@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LegoBOOST.Helpers
+namespace LegoBOOSTNet.Helpers
 {
     public static class AsyncHelpers
     {

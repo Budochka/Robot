@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LegoBOOST.Interfaces
+namespace LegoBOOSTNet.Interfaces
 {
     public interface IButton
     {

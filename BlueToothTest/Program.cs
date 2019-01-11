@@ -1,5 +1,5 @@
-﻿using LegoBOOST.Classes;
-using LegoBOOST.Constants;
+﻿using LegoBOOSTNet.Classes;
+using LegoBOOSTNet.Constants;
 using static System.Console;
 
 namespace BlueToothTest
