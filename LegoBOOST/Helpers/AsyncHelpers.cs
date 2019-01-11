@@ -45,8 +45,7 @@ namespace LegoBOOSTNet.Helpers
             private bool _done;
             public Exception InnerException { get; set; }
             readonly AutoResetEvent _workItemsWaiting = new AutoResetEvent(false);
-            readonly Queue<Tuple<SendOrPostCallback, object>> _items =
-                new Queue<Tuple<SendOrPostCallback, object>>();
+            readonly Queue<Tuple<SendOrPostCallback, object>> _items = new Queue<Tuple<SendOrPostCallback, object>>();
 
             public override void Send(SendOrPostCallback d, object state)
             {
@@ -75,9 +74,7 @@ namespace LegoBOOSTNet.Helpers
                     lock (_items)
                     {
                         if (_items.Count > 0)
-                        {
                             task = _items.Dequeue();
-                        }
                     }
                     if (task != null)
                     {

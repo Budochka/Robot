@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Storage.Streams;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
+
+[assembly: InternalsVisibleTo("LegoBOOSTNetTests")]
 
 namespace LegoBOOSTNet.Classes
 {
@@ -140,11 +143,7 @@ namespace LegoBOOSTNet.Classes
         private void HandleSensorData(byte[] data)
         {
             if ((Ports)data[3] == _distanceColorSensorPort)
-            {
-                Color color = (Color) data[4];
-                int distance = data[5];
-                _distanceColorSensor.FireEvent(color, distance);
-            }
+                _distanceColorSensor.FireEvent(data);
         }
 
         private void HandlePortStatus(byte[] data)

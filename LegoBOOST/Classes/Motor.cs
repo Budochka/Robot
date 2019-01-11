@@ -1,10 +1,13 @@
 ﻿using System;
 using System.CodeDom;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
+
+[assembly: InternalsVisibleTo("LegoBOOSTNetTests")]
 
 namespace LegoBOOSTNet.Classes
 {

@@ -13,8 +13,8 @@ namespace LegoBOOSTNet.Constants
         //messages 
         public static readonly byte[] TRAILER = new byte[] { 0x64, 0x7f, 0x03 };
         
-        //need to set 4th byte to exact port for subscription
-        public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x08, 0x01, 0x00, 0x00, 0x00, 0x01 };
+        //need to set 4th byte to exact port for subscription, 5th byte is sensor mode
+        public static readonly byte[] CMD_SUBSCRIBE_DISTANCE_COLOR = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01 };
 
         public static readonly byte[] CMD_SUBSCRIBE_ANGLE = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x01 };
         public static readonly byte[] CMD_SUBSCRIBE_SPEED = new byte[] { 0x0a, 0x00, 0x41, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01 };
