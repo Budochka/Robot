@@ -13,7 +13,7 @@ namespace LegoBOOSTNet.Classes
         {
             LoggerHelper.Instance.Debug("Button constructor called");
 
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
+            AsyncHelpers.RunSync(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
         }
 
         public event EventHandler OnButtonPressed;

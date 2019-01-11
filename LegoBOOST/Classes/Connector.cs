@@ -41,16 +41,16 @@ namespace LegoBOOSTNet.Classes
         {
             try
             {
-                var device = AsyncHelpers.RunSync<BluetoothLEDevice>(() => BluetoothLEDevice.FromBluetoothAddressAsync(ConnectionConstants.AdreessLEGO).AsTask());
+                var device = AsyncHelpers.RunSync(() => BluetoothLEDevice.FromBluetoothAddressAsync(ConnectionConstants.AdreessLEGO).AsTask());
                 if (device != null)
                 {
                     _bluetoothLEDevice = device;
-                    var services = AsyncHelpers.RunSync<GattDeviceServicesResult>(() 
+                    var services = AsyncHelpers.RunSync(() 
                         => device.GetGattServicesForUuidAsync(Guid.Parse(ConnectionConstants.ServiceUUID)).AsTask());
                     if (services.Services.Count > 0)
                     {
                         _deviceService = services.Services[0];
-                        var characteristics = AsyncHelpers.RunSync<GattCharacteristicsResult>(() 
+                        var characteristics = AsyncHelpers.RunSync(() 
                             => _deviceService.GetCharacteristicsForUuidAsync(Guid.Parse(ConnectionConstants.CharacteristicUUID)).AsTask());
                         if (characteristics.Characteristics.Count > 0)
                         {

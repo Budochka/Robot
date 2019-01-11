@@ -29,7 +29,7 @@ namespace LegoBOOSTNet.Classes
             buffer[4] = (byte)mode;
             buffer[5] = granularity;
 
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+            AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
 
             LoggerHelper.Instance.Debug($"TiltSensor::SetNotificationMode mode = {mode}, granularity = {granularity}");
         }

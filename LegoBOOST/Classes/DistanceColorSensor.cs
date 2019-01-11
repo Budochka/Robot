@@ -39,7 +39,7 @@ namespace LegoBOOSTNet.Classes
 
             LoggerHelper.Instance.Debug($"DistanceColorSensor::SetNotifications {BitConverter.ToString(buffer)} created");
 
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
         }
 
         public event EventHandler<DistanceColorSensorEventArgs> OnChange;

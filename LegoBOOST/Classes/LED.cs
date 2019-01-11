@@ -30,9 +30,9 @@ namespace LegoBOOSTNet.Classes
         public void SetColor(Color color)
         {
             _color = color;
-            var buffer = CreateMessage(color).AsBuffer();
+            var buffer = CreateMessage().AsBuffer();
 
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
+            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
 
             LoggerHelper.Instance.Debug($"LED::SetColor color = {color} called");
         }
@@ -40,7 +40,7 @@ namespace LegoBOOSTNet.Classes
         public async void SetColorAsync(Color color)
         {
             _color = color;
-            var buffer = CreateMessage(color).AsBuffer();
+            var buffer = CreateMessage().AsBuffer();
 
             await _characteristic.WriteValueAsync(buffer);
 
@@ -49,7 +49,7 @@ namespace LegoBOOSTNet.Classes
 
         public event EventHandler OnColorChanged;
 
-        private byte[] CreateMessage(Color color)
+        private byte[] CreateMessage()
         {
             var message = new byte[8]; //8 is packed length for color setting
 
@@ -60,7 +60,7 @@ namespace LegoBOOSTNet.Classes
             message[4] = 0x11; //by default
             message[5] = 0x51; //by default
             message[6] = 0x00; //by default
-            message[7] = (byte)color; //color value
+            message[7] = (byte)_color; //color value
 
             LoggerHelper.Instance.Debug($"LED::Message {BitConverter.ToString(message)} created");
 

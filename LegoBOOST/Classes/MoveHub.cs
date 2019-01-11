@@ -41,8 +41,8 @@ namespace LegoBOOSTNet.Classes
             Button = _button;
 
             //subscribe to the GATT characteristic notification
-            GattCommunicationStatus status = AsyncHelpers.RunSync<GattCommunicationStatus>(()
-                =>_characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify).AsTask());
+            var status = AsyncHelpers.RunSync(() =>
+                _characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify).AsTask());
 
             if (status == GattCommunicationStatus.Success)
             {

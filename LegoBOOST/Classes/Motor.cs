@@ -67,7 +67,7 @@ namespace LegoBOOSTNet.Classes
 
             LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
 
-            AsyncHelpers.RunSync<GattCommunicationStatus>(() => _characteristic.WriteValueAsync(buffer).AsTask());
+            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
         }
 
         //dutyCycle - is value for motor cycle. Not known if it will be used
