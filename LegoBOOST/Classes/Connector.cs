@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using Windows.Devices.Enumeration;
+using Windows.Foundation;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
@@ -33,11 +35,19 @@ namespace LegoBOOSTNet.Classes
                 LoggerHelper.Instance.Error(s);
                 throw (new Exception(s));
             }
-            else
-            {
-                LoggerHelper.Instance.Debug("Connector::CreateMoveHub called successully");
-                return new MoveHub(_characteristic, thirdMotor, distanceColorSensor);
-            }
+
+            LoggerHelper.Instance.Debug("Connector::CreateMoveHub called successully");
+            return new MoveHub(_characteristic, thirdMotor, distanceColorSensor);
+        }
+
+        private void handlerPairingReq(DeviceInformationCustomPairing CP, DevicePairingRequestedEventArgs DPR)
+        {
+            //so we get here for custom pairing request.
+            //this is the magic place where your pin goes.
+            //my device actually does not require a pin but
+            //windows requires at least a "0".  So this solved 
+            //it.  This does not pull up the Windows UI either.
+            DPR.Accept("0");
         }
 
         public bool Connect()
@@ -47,6 +57,33 @@ namespace LegoBOOSTNet.Classes
                 var device = AsyncHelpers.RunSync(() => BluetoothLEDevice.FromBluetoothAddressAsync(ConnectionConstants.AdreessLEGO).AsTask());
                 if (device != null)
                 {
+                    if (device.DeviceInformation.Pairing.IsPaired == false)
+                    {
+
+                        /* Optional Below - Some examples say use FromIdAsync
+                        to get the device. I don't think that it matters.   */
+                        var did = device.DeviceInformation.Id; //I reuse did to reload later.
+                        device.Dispose();
+                        device = null;
+                        device = AsyncHelpers.RunSync(() => BluetoothLEDevice.FromIdAsync(did).AsTask());
+                        /* end optional */
+                        var handlerPairingRequested = new TypedEventHandler<DeviceInformationCustomPairing, DevicePairingRequestedEventArgs>(handlerPairingReq);
+                        device.DeviceInformation.Pairing.Custom.PairingRequested += handlerPairingRequested;
+                        LoggerHelper.Instance.Debug("Paired to device");
+
+                        var prslt = AsyncHelpers.RunSync(() => device.DeviceInformation.Pairing.Custom.PairAsync(DevicePairingKinds.ProvidePin, DevicePairingProtectionLevel.None).AsTask());
+                        LoggerHelper.Instance.Debug($"Custom PAIR complete status: {prslt.Status}, Connection Status: {device.ConnectionStatus}");
+
+                        device.DeviceInformation.Pairing.Custom.PairingRequested -= handlerPairingRequested; //Don't need it anymore once paired.
+
+                        if (prslt.Status != DevicePairingResultStatus.Paired)
+                        {
+                            //This should not happen. If so we exit to try again.
+                            LoggerHelper.Instance.Debug("prslt exiting.  prslt.status=" + prslt.Status); // so the status may have updated.  lets drop out of here and get the device again.  should be paired the 2nd time around?
+                            return false;
+                        }
+                    }
+
                     _bluetoothLEDevice = device;
                     var services = AsyncHelpers.RunSync(() 
                         => device.GetGattServicesForUuidAsync(Guid.Parse(ConnectionConstants.ServiceUUID)).AsTask());
@@ -70,23 +107,17 @@ namespace LegoBOOSTNet.Classes
                             LoggerHelper.Instance.Debug("Connector::Connect characteristic created");
                             return true;
                         }
-                        else
-                        {
-                            LoggerHelper.Instance.Debug("Connector::Connect characteristic not found");
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        LoggerHelper.Instance.Debug("Connector::Connect service not found");
+
+                        LoggerHelper.Instance.Debug("Connector::Connect characteristic not found");
                         return false;
                     }
-                }
-                else
-                {
-                    LoggerHelper.Instance.Debug("Connector::Connect device not found");
+
+                    LoggerHelper.Instance.Debug("Connector::Connect service not found");
                     return false;
                 }
+
+                LoggerHelper.Instance.Debug("Connector::Connect device not found");
+                return false;
             }
             catch (Exception e)
             {

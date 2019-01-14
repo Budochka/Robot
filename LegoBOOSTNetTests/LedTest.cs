@@ -3,13 +3,8 @@
 namespace LegoBOOSTNetTests
 {
     [TestFixture]
-    public class LedTest
+    public class LEDTest
     {
-        [Test]
-        public void TestMethod()
-        {
-            // TODO: Add your test code here
-            Assert.Pass("Your first passing test");
-        }
+
     }
 }
