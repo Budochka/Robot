@@ -20,20 +20,47 @@ namespace LegoBOOSTNet.Classes
         {
             _characteristic = characteristic;
             _port = port;
+            _mode = SensorMode.NOT_SET;
 
             LoggerHelper.Instance.Debug("TiltSensor constructor called");
         }
 
+        private GattCommunicationStatus Subscribe(byte mode, byte granularity, bool subscribe)
+        {
+            var buffer = (byte[])ConnectionConstants.CMD_SUBSCRIBE_TILT_SENSOR.Clone();
+
+            //set the mode
+            buffer[4] = mode;
+            //set notifications granularity
+            buffer[5] = granularity;
+            //01 - subscribe, 00 - unsubscribe
+            buffer[9] = (byte)(subscribe ? 0x01 : 0x00);
+
+            LoggerHelper.Instance.Debug($"TiltSensor::SetMode notification {BitConverter.ToString(buffer)} created");
+
+            return AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+        }
+
         public void SetNotificationMode(SensorMode mode, byte granularity = 1)
         {
+            if (_mode == mode)
+            {
+                LoggerHelper.Instance.Debug("TiltSensor::SetMode no mode change");
+                return;
+            }
+
+            if (_mode != SensorMode.NOT_SET)
+            {
+                if (Subscribe((byte)_mode, granularity, false) != GattCommunicationStatus.Success)
+                {
+                    LoggerHelper.Instance.Debug("TiltSensor::SetNotifications - failed to unsubscribe from notifications exception");
+                    throw new Exception("Failed to unsubscribe from notifications");
+                }
+            }
+
             _mode = mode;
 
-            var buffer = ConnectionConstants.CMD_SUBSCRIBE_TILT_SENSOR;
-            buffer[4] = (byte)mode;
-            buffer[5] = granularity;
-
-            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
-            if (result != GattCommunicationStatus.Success)
+            if (Subscribe((byte)_mode, granularity, false) != GattCommunicationStatus.Success)
             {
                 LoggerHelper.Instance.Debug("TiltSensor::SetNotificationMode - failed to subscribe to notifications");
                 throw new Exception("Failed to subscribe to notifications");

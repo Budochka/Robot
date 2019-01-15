@@ -60,29 +60,53 @@ namespace LegoBOOSTNet.Classes
         {
             _characteristic = characteristic;
             _port = port;
+            _mode = DistanceColorSensorMods.NOT_SET;
 
             LoggerHelper.Instance.Debug("DistanceColorSensor constructor called");
         }
 
-        public void SetMode(DistanceColorSensorMods mode)
+        private GattCommunicationStatus Subscribe(byte mode, bool subscribe)
         {
-            _mode = mode;
+            var buffer = (byte[])ConnectionConstants.CMD_SUBSCRIBE_DISTANCE_COLOR.Clone();
 
-            //load default method format
-            var buffer = ConnectionConstants.CMD_SUBSCRIBE_DISTANCE_COLOR;
             //set the port
             buffer[3] = (byte)_port;
-            //set mode
-            buffer[4] = (byte)_mode;
+            //set the mode
+            buffer[4] = mode;
+            //01 - subscribe, 00 - unsubscribe
+            buffer[9] = (byte) (subscribe ? 0x01 : 0x00);
 
             LoggerHelper.Instance.Debug($"DistanceColorSensor::SetMode notification {BitConverter.ToString(buffer)} created");
 
-            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
-            if (result != GattCommunicationStatus.Success)
+            return AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+        }
+
+        public void SetMode(DistanceColorSensorMods mode)
+        {
+            if (_mode == mode)
+            {
+                LoggerHelper.Instance.Debug("DistanceColorSensor::SetMode no mode change");
+                return;
+            }
+
+            if (_mode != DistanceColorSensorMods.NOT_SET)
+            {
+                if (Subscribe((byte)_mode, false) !=  GattCommunicationStatus.Success)
+                {
+                    LoggerHelper.Instance.Debug("DistanceColorSensor::SetNotifications - failed to unsubscribe from notifications exception");
+                    throw new Exception("Failed to unsubscribe from notifications");
+                }
+            }
+
+            _mode = mode;
+
+            if (Subscribe((byte)_mode, true) != GattCommunicationStatus.Success)
             {
                 LoggerHelper.Instance.Debug("DistanceColorSensor::SetNotifications - failed to subscribe to notifications exception");
                 throw new Exception("Failed to subscribe to notifications");
             }
+
+            LoggerHelper.Instance.Debug($"DistanceColorSensor::SetNotificationMode mode = {mode}");
         }
 
         public event EventHandler<DistanceColorSensorEventArgs> OnChange;

@@ -6,6 +6,7 @@
         SENSOR_2_AXIS_SIMPLE,
         SENSOR_3_AXIS_SIMPLE,
         SENSOR_BUMP_DETECT,
-        SENSOR_3_AXIS_PRECISE
+        SENSOR_3_AXIS_PRECISE,
+        NOT_SET = 0xFF
     }
 }

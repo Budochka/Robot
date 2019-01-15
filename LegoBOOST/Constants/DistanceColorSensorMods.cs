@@ -8,6 +8,7 @@
         DISTANCE_HOW_CLOSE = 0x03,
         DISTANCE_SUBINCH_HOW_CLOSE = 0x04,
         COLOR_DISTANCE_FLOAT = 0x08,
-        LUMINOSITY = 0x09
+        LUMINOSITY = 0x09,
+        NOT_SET = 0xFF
     }
 }
