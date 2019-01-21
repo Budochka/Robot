@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
+using Windows.Storage.Streams;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
@@ -12,7 +16,7 @@ using LegoBOOSTNet.Interfaces;
 
 namespace LegoBOOSTNet.Classes
 {
-    public class Connector
+    public class Connector : IConnection
     {
         private BluetoothLEDevice _bluetoothLEDevice;
         private GattDeviceService _deviceService;
@@ -37,7 +41,7 @@ namespace LegoBOOSTNet.Classes
             }
 
             LoggerHelper.Instance.Debug("Connector::CreateMoveHub called successully");
-            return new MoveHub(_characteristic, thirdMotor, distanceColorSensor);
+            return new MoveHub(this, thirdMotor, distanceColorSensor);
         }
 
         private void handlerPairingReq(DeviceInformationCustomPairing CP, DevicePairingRequestedEventArgs DPR)
@@ -50,6 +54,7 @@ namespace LegoBOOSTNet.Classes
             DPR.Accept("0");
         }
 
+        //connect to bluetooth device
         public bool Connect()
         {
             try
@@ -85,15 +90,20 @@ namespace LegoBOOSTNet.Classes
                     }
 
                     _bluetoothLEDevice = device;
+
+                    //get the Lego Boost service
                     var services = AsyncHelpers.RunSync(() 
                         => device.GetGattServicesForUuidAsync(Guid.Parse(ConnectionConstants.ServiceUUID)).AsTask());
                     if (services.Services.Count > 0)
                     {
+                        //there is should be only one service with such UUID
                         _deviceService = services.Services[0];
+                        //get the characteristic
                         var characteristics = AsyncHelpers.RunSync(() 
                             => _deviceService.GetCharacteristicsForUuidAsync(Guid.Parse(ConnectionConstants.CharacteristicUUID)).AsTask());
                         if (characteristics.Characteristics.Count > 0)
                         {
+                            //there is should be only one characteristic with such UUID
                             _characteristic = characteristics.Characteristics[0];
                             GattCharacteristicProperties properties = _characteristic.CharacteristicProperties;
                             LoggerHelper.Instance.Debug("Characteristic properties:");
@@ -105,6 +115,22 @@ namespace LegoBOOSTNet.Classes
                                 }
                             }
                             LoggerHelper.Instance.Debug("Connector::Connect characteristic created");
+
+                            //subscribe to the GATT characteristic notification
+                            var status = AsyncHelpers.RunSync(() =>
+                                _characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify).AsTask());
+
+                            if (status == GattCommunicationStatus.Success)
+                            {
+                                LoggerHelper.Instance.Debug("Subscribing to the Indication/Notification");
+                                _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
+                            }
+                            else
+                            {
+                                LoggerHelper.Instance.Debug($"Connetor::Connect set notification failed: {status}");
+                                throw new Exception("Connetor::Connect set notification failed");
+                            }
+
                             return true;
                         }
 
@@ -132,8 +158,31 @@ namespace LegoBOOSTNet.Classes
             }
         }
 
+        private void DataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            //we should handle only our messages
+            if (sender != _characteristic)
+                return;
+
+            var handler = OnChange;
+
+            if (handler != null)
+            {
+                byte[] data = new byte[args.CharacteristicValue.Length];
+                DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+
+                var notificationArgs = new NotificationEventArgs { Data = data.ToArray() };
+                handler.Invoke(this, notificationArgs);
+
+                LoggerHelper.Instance.Debug($"Connector::DataCharacteristic_ValueChanged message {BitConverter.ToString(data)}");
+            }
+        }
+
+
         public void Disconnect()
         {
+            _characteristic.ValueChanged -= DataCharacteristic_ValueChanged;
+
             _bluetoothLEDevice?.Dispose();
             _bluetoothLEDevice = null;
             _deviceService = null;
@@ -141,5 +190,19 @@ namespace LegoBOOSTNet.Classes
 
             LoggerHelper.Instance.Debug("Connector:Disconnect called");
         }
+
+        public bool WriteValue(byte[] data)
+        {
+            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(data.AsBuffer()).AsTask());
+            return (result == GattCommunicationStatus.Success);
+        }
+
+        public async Task<bool> WriteValueAsync(byte[] data)
+        {
+            var result = await _characteristic.WriteValueAsync(data.AsBuffer());
+            return (result == GattCommunicationStatus.Success);
+        }
+
+        public event EventHandler<NotificationEventArgs> OnChange;
     }
 }

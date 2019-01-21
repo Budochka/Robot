@@ -13,12 +13,12 @@ namespace LegoBOOSTNet.Classes
 {
     class Motor : IMotor
     {
-        private readonly GattCharacteristic _characteristic;
+        private readonly IConnection _connection;
         private readonly Ports _port;
 
-        internal Motor(GattCharacteristic characteristic, Ports port)
+        internal Motor(IConnection connection, Ports port)
         {
-            _characteristic = characteristic;
+            _connection = connection;
             _port = port;
 
             LoggerHelper.Instance.Debug("Motor constructor called");
@@ -52,8 +52,7 @@ namespace LegoBOOSTNet.Classes
             {
                 throw (new Exception("Speed value should be between -100 and 100"));
             }
-            var buffer = CreateMessageTimed(milliseconds, speed).AsBuffer();
-            await _characteristic.WriteValueAsync(buffer);
+            await _connection.WriteValueAsync(CreateMessageTimed(milliseconds, speed));
 
             LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync milliseconds = {milliseconds}, speed = {speed}");
         }
@@ -67,10 +66,8 @@ namespace LegoBOOSTNet.Classes
             {
                 throw (new Exception("Speed value should be between -100 and 100"));
             }
-            var buffer = CreateMessageTimed(seconds, speed).AsBuffer();
 
-            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
-            if (result != GattCommunicationStatus.Success)
+            if (!_connection.WriteValue(CreateMessageTimed(seconds, speed)))
             {
                 LoggerHelper.Instance.Debug("Motor::SetSpeedTimed - failed to set speed");
                 throw new Exception("Failed to set speed");

@@ -12,13 +12,11 @@ namespace LegoBOOSTNet.Classes
 {
     public class Button : IButton
     {
-        internal Button(GattCharacteristic characteristic)
+        internal Button(IConnection connection)
         {
             LoggerHelper.Instance.Debug("Button constructor called");
 
-            var result = AsyncHelpers.RunSync(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
-
-            if (result != GattCommunicationStatus.Success)
+            if (!connection.WriteValue(ConnectionConstants.CMD_SUBSCRIBE_BUTTON))
             {
                 LoggerHelper.Instance.Debug("Button::Button - failed to subscribe to notifications exception");
                 throw new Exception("Failed to subscribe to notifications");
