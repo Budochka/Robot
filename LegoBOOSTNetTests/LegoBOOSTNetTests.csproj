@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ButtonTest.cs" />
+    <Compile Include="DistanceColorSensorTest.cs" />
     <Compile Include="LedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

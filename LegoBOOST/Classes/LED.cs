@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using System.Threading.Tasks;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
@@ -43,11 +42,14 @@ namespace LegoBOOSTNet.Classes
             LoggerHelper.Instance.Debug($"LED::SetColor color = {color} called");
         }
 
-        public async void SetColorAsync(Color color)
+        public async Task SetColorAsync(Color color)
         {
             _color = color;
 
-            await _connection.WriteValueAsync(CreateMessage());
+            if (!await _connection.WriteValueAsync(CreateMessage()))
+            {
+                LoggerHelper.Instance.Debug("LED::SetColor - failed to set color");
+            }
 
             LoggerHelper.Instance.Debug("LED::SetColorAsync called");
         }

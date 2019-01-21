@@ -2,8 +2,7 @@
 using NUnit.Framework;
 using LegoBOOSTNet.Classes;
 using LegoBOOSTNet.Constants;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
-using Windows.Storage.Streams;
+using LegoBOOSTNet.Interfaces;
 using Telerik.JustMock;
 
 namespace LegoBOOSTNetTests
@@ -18,12 +17,15 @@ namespace LegoBOOSTNetTests
         public void TestButtonPressed()
         {
             _pressed = false;
-            var gc = Mock.Create<GattCharacteristic>(Constructor.NotMocked);
-/*            Button button = new Button(gc);
+            var connection = Mock.Create<IConnection>();
+
+            Mock.Arrange(() => connection.WriteValue(Arg.IsAny<byte[]>())).Returns((byte[] b) => true);
+
+            var button = new Button(connection);
 
             button.OnButtonPressed += ButtonEvent_Pressed;
             button.FireEvent(ButtonStatus.BUTTON_PRESSED);
-*/
+
             Assert.True(_pressed);
         }
 
@@ -32,12 +34,16 @@ namespace LegoBOOSTNetTests
         {
             _released = false;
 
-            /*
-            var gc = Mock.Create<GattCharacteristic>();
-            Button button = new Button(gc);
+            var connection = Mock.Create<IConnection>();
+
+            Mock.Arrange(() => connection.WriteValue(Arg.IsAny<byte[]>()))
+                .Returns((byte[] b) => true);
+
+            var button = new Button(connection);
+
             button.OnButtonReleased += ButtonEvent_Released;
             button.FireEvent(ButtonStatus.BUTTON_RELEASED);
- */
+
             Assert.True(_released);
         }
 
