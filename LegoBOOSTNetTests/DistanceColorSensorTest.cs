@@ -46,7 +46,7 @@ namespace LegoBOOSTNetTests
             Mock.Assert(sensor);
         }
 
-        //check correct fields order in notification events
+        //check correct fields order in notification events for COLOR_DISTANCE_FLOAT mode
         [Test]
         public void TestNotificationReceived()
         {
