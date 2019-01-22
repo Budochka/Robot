@@ -60,7 +60,9 @@
     <Compile Include="ButtonTest.cs" />
     <Compile Include="DistanceColorSensorTest.cs" />
     <Compile Include="LedTest.cs" />
+    <Compile Include="MotorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TiltSensorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

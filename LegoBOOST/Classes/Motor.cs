@@ -46,38 +46,29 @@ namespace LegoBOOSTNet.Classes
             }
         }
 
-        public async void SetSpeedTimedAsync(ushort milliseconds, int speed)
+        public async void SetSpeedTimedAsync(ushort milliseconds, sbyte dutyCycle = 0x64)
         {
-            if (Math.Abs(speed) > 100)
-            {
-                throw (new Exception("Speed value should be between -100 and 100"));
-            }
-            await _connection.WriteValueAsync(CreateMessageTimed(milliseconds, speed));
+            await _connection.WriteValueAsync(CreateMessageTimed(milliseconds, (byte)dutyCycle));
 
-            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync milliseconds = {milliseconds}, speed = {speed}");
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimedAsync milliseconds = {milliseconds}, speed = {dutyCycle}");
         }
 
         public event EventHandler OnActionStart;
         public event EventHandler OnActionFinished;
 
-        public void SetSpeedTimed(ushort seconds, int speed)
+        public void SetSpeedTimed(ushort milliseconds, sbyte dutyCycle = 0x64)
         {
-            if (Math.Abs(speed) > 100)
-            {
-                throw (new Exception("Speed value should be between -100 and 100"));
-            }
-
-            if (!_connection.WriteValue(CreateMessageTimed(seconds, speed)))
+            if (!_connection.WriteValue(CreateMessageTimed(milliseconds, (byte)dutyCycle)))
             {
                 LoggerHelper.Instance.Debug("Motor::SetSpeedTimed - failed to set speed");
                 throw new Exception("Failed to set speed");
             }
 
-            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {seconds}, speed = {speed}");
+            LoggerHelper.Instance.Debug($"Motor::SetSpeedTimed seconds = {milliseconds}, speed = {dutyCycle}");
         }
 
         //dutyCycle - is value for motor cycle. Not known if it will be used
-        private byte[] CreateMessageTimed(ushort seconds, int speed, byte dutyCycle = 0x64)
+        private byte[] CreateMessageTimed(ushort milliseconds, byte dutyCycle = 0x64)
         {
             //message to be sent to motor
             var message = new byte[12]; //12 is packed length for timed values
@@ -89,7 +80,7 @@ namespace LegoBOOSTNet.Classes
             message[5] = 0x09; //Time Value
 
             //convert seconds to little endian
-            byte[] bytes = BitConverter.GetBytes(seconds);
+            byte[] bytes = BitConverter.GetBytes(milliseconds);
             Array.Reverse(bytes);
             message[6] = bytes[0]; 
             message[7] = bytes[1]; 
