@@ -60,7 +60,7 @@ namespace LegoBOOSTNet.Classes
 
             _mode = mode;
 
-            if (!Subscribe((byte)_mode, granularity, false))
+            if (!Subscribe((byte)_mode, granularity, true))
             {
                 LoggerHelper.Instance.Debug("TiltSensor::SetNotificationMode - failed to subscribe to notifications");
                 throw new Exception("Failed to subscribe to notifications");

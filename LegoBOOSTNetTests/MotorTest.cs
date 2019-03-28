@@ -25,7 +25,7 @@ namespace LegoBOOSTNetTests
             sbyte dutyCycle = -100;
 
             //message we are expecting to receive
-            byte[] data = {12, 0, 0x81, (byte)Ports.PORT_A, 0x11, 0x09, 0, (byte)dutyCycle, 0, 0, 0, 0 };
+            byte[] data = {12, 0, 0x81, (byte)Ports.PORT_A, 0x11, 0x09, 0, 0, 0, 0, 0, 0 };
             byte[] bytes = BitConverter.GetBytes(time);
             Array.Reverse(bytes);
             data[6] = bytes[0];
@@ -51,7 +51,7 @@ namespace LegoBOOSTNetTests
             sbyte dutyCycle = -100;
 
             //message we are expecting to receive
-            byte[] data = new byte[12] { 12, 0, 0x81, (byte)Ports.PORT_A, 0x11, 0x09, 0, (byte)dutyCycle, 0, 0, 0, 0 };
+            byte[] data = new byte[12] { 12, 0, 0x81, (byte)Ports.PORT_A, 0x11, 0x09, 0, 0, 0, 0, 0, 0 };
             byte[] bytes = BitConverter.GetBytes(time);
             Array.Reverse(bytes);
             data[6] = bytes[0];
