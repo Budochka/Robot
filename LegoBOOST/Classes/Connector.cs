@@ -3,14 +3,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using LegoBOOSTNet.Constants;
+using LegoBOOSTNet.Helpers;
+using LegoBOOSTNet.Interfaces;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Storage.Streams;
-using LegoBOOSTNet.Constants;
-using LegoBOOSTNet.Helpers;
-using LegoBOOSTNet.Interfaces;
 
 [assembly: InternalsVisibleTo("LegoBOOSTNetTests")]
 
