@@ -16,6 +16,12 @@ namespace LegoBOOSTNet.Classes
         {
             LoggerHelper.Instance.Debug("Button constructor called");
 
+            if (characteristic == null)
+            {
+                LoggerHelper.Instance.Debug("Button::Button - null characteristic passed");
+                throw new Exception("Failed null characteristic passed");
+            }
+
             var result = AsyncHelpers.RunSync(() => characteristic.WriteValueAsync(ConnectionConstants.CMD_SUBSCRIBE_BUTTON.AsBuffer()).AsTask());
 
             if (result != GattCommunicationStatus.Success)
