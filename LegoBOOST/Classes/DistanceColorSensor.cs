@@ -12,7 +12,7 @@ namespace LegoBOOSTNet.Classes
 {
     class DistanceColorSensor : IDistanceColorSensor
     {
-        private readonly GattCharacteristic _characteristic;
+        private readonly IConnection _connection;
         private readonly Ports _port;
         private DistanceColorSensorMods _mode;
 
@@ -56,16 +56,16 @@ namespace LegoBOOSTNet.Classes
             LoggerHelper.Instance.Debug("DistanceColorSensor::FireEvent OnChange");
         }
 
-        internal DistanceColorSensor(GattCharacteristic characteristic, Ports port)
+        internal DistanceColorSensor(IConnection connection, Ports port)
         {
-            _characteristic = characteristic;
+            _connection = connection;
             _port = port;
             _mode = DistanceColorSensorMods.NOT_SET;
 
             LoggerHelper.Instance.Debug("DistanceColorSensor constructor called");
         }
 
-        private GattCommunicationStatus Subscribe(byte mode, bool subscribe)
+        private bool Subscribe(byte mode, bool subscribe)
         {
             var buffer = (byte[])ConnectionConstants.CMD_SUBSCRIBE_DISTANCE_COLOR.Clone();
 
@@ -78,7 +78,7 @@ namespace LegoBOOSTNet.Classes
 
             LoggerHelper.Instance.Debug($"DistanceColorSensor::SetMode notification {BitConverter.ToString(buffer)} created");
 
-            return AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer.AsBuffer()).AsTask());
+            return _connection.WriteValue(buffer);
         }
 
         public void SetMode(DistanceColorSensorMods mode)
@@ -91,7 +91,7 @@ namespace LegoBOOSTNet.Classes
 
             if (_mode != DistanceColorSensorMods.NOT_SET)
             {
-                if (Subscribe((byte)_mode, false) !=  GattCommunicationStatus.Success)
+                if (!Subscribe((byte)_mode, false))
                 {
                     LoggerHelper.Instance.Debug("DistanceColorSensor::SetNotifications - failed to unsubscribe from notifications exception");
                     throw new Exception("Failed to unsubscribe from notifications");
@@ -100,7 +100,7 @@ namespace LegoBOOSTNet.Classes
 
             _mode = mode;
 
-            if (Subscribe((byte)_mode, true) != GattCommunicationStatus.Success)
+            if (!Subscribe((byte)_mode, false))
             {
                 LoggerHelper.Instance.Debug("DistanceColorSensor::SetNotifications - failed to subscribe to notifications exception");
                 throw new Exception("Failed to subscribe to notifications");

@@ -13,7 +13,7 @@ namespace LegoBOOSTNet.Classes
 {
     class MoveHub : IMoveHub
     {
-        private readonly GattCharacteristic _characteristic;
+        private readonly IConnection _connection;
         private LED _led;
         private Motor _motorA;
         private Motor _motorB;
@@ -26,9 +26,9 @@ namespace LegoBOOSTNet.Classes
         private readonly Ports _thirdMotorPort;
         private readonly Ports _distanceColorSensorPort;
 
-        internal MoveHub(GattCharacteristic gattCharacteristic, Ports thirdMotor, Ports distanceColorSensor)
+        internal MoveHub(IConnection connection, Ports thirdMotor, Ports distanceColorSensor)
         {
-            _characteristic = gattCharacteristic;
+            _connection = connection;
             _thirdMotorPort = thirdMotor;
             _distanceColorSensorPort = distanceColorSensor;
 
@@ -42,21 +42,6 @@ namespace LegoBOOSTNet.Classes
             TiltSensor = _tiltSensor;
             DistanceColorSensor = _distanceColorSensor;
             Button = _button;
-
-            //subscribe to the GATT characteristic notification
-            var status = AsyncHelpers.RunSync(() =>
-                _characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify).AsTask());
-
-            if (status == GattCommunicationStatus.Success)
-            {
-                LoggerHelper.Instance.Debug("Subscribing to the Indication/Notification");
-                _characteristic.ValueChanged += DataCharacteristic_ValueChanged;
-            }
-            else
-            {
-                LoggerHelper.Instance.Debug($"MoveHub::MoveHub set notification failed: {status}");
-                throw new Exception("MoveHub::MoveHub set notification failed");
-            }
 
             LoggerHelper.Instance.Debug("MotorHub constructor called");
         }
@@ -79,16 +64,16 @@ namespace LegoBOOSTNet.Classes
 
         private void CreateParts(Ports thirdMotor, Ports distanceColorSensor)
         {
-            _motorA = new Motor(_characteristic, Ports.PORT_A);
-            _motorB = new Motor(_characteristic, Ports.PORT_B);
-            _motorAB = new Motor(_characteristic, Ports.PORT_AB);
-            _led = new LED(_characteristic, Ports.PORT_LED);
-            _tiltSensor = new TiltSensor(_characteristic, Ports.PORT_TILT_SENSOR);
-            _button = new Button(_characteristic);
+            _motorA = new Motor(_connection, Ports.PORT_A);
+            _motorB = new Motor(_connection, Ports.PORT_B);
+            _motorAB = new Motor(_connection, Ports.PORT_AB);
+            _led = new LED(_connection, Ports.PORT_LED);
+            _tiltSensor = new TiltSensor(_connection, Ports.PORT_TILT_SENSOR);
+            _button = new Button(_connection);
 
             //creating devices with variable port numbers
-            _motor3 = new Motor(_characteristic, thirdMotor);
-            _distanceColorSensor = new DistanceColorSensor(_characteristic, distanceColorSensor);
+            _motor3 = new Motor(_connection, thirdMotor);
+            _distanceColorSensor = new DistanceColorSensor(_connection, distanceColorSensor);
 
             LoggerHelper.Instance.Debug("MotorHub::CreateParts called");
         }
@@ -106,7 +91,7 @@ namespace LegoBOOSTNet.Classes
         private void HandleShutDown()
         {
             //unsubscribe from events
-            _characteristic.ValueChanged -= DataCharacteristic_ValueChanged;
+            _connection.OnChange -= Connection_ValueChanged;
 
             //we should close everything, because we are shutting down!
             _led = null;
@@ -183,25 +168,22 @@ namespace LegoBOOSTNet.Classes
             }
         }
 
-        private void DataCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        private void Connection_ValueChanged(Object sender, NotificationEventArgs args)
         {
             //we should handle only our messages
-            if (sender != _characteristic)
+            if (sender != _connection)
                 return;
 
-            byte[] data = new byte[args.CharacteristicValue.Length];
-            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(data);
+            LoggerHelper.Instance.Debug($"MotorHub::DataCharacteristic_ValueChanged notification received {BitConverter.ToString(args.Data)}");
 
-            LoggerHelper.Instance.Debug($"MotorHub::DataCharacteristic_ValueChanged notification received {BitConverter.ToString(data)}");
+            int length = args.Data[0]; //message length
 
-            int length = data[0]; //message length
-
-            switch ((PacketType)data[2])
+            switch ((PacketType)args.Data[2])
             {
                 //device information
                 case PacketType.MSG_DEVICE_INFO:
                 {
-                    HandleDeviceInfo(data);
+                    HandleDeviceInfo(args.Data);
                     break;
                 }
 
@@ -221,7 +203,7 @@ namespace LegoBOOSTNet.Classes
                 //port information
                 case PacketType.MSG_PORT_INFO:
                 {
-                    HandlePortInfo(data);
+                    HandlePortInfo(args.Data);
                     break;
                 }
 
@@ -241,7 +223,7 @@ namespace LegoBOOSTNet.Classes
                 //sensor reading
                 case PacketType.MSG_SENSOR_DATA:
                 {
-                    HandleSensorData(data);
+                    HandleSensorData(args.Data);
                     break;
                 }
 
@@ -255,7 +237,7 @@ namespace LegoBOOSTNet.Classes
                 //port changes
                 case PacketType.MSG_PORT_STATUS:
                 {
-                    HandlePortStatus(data);
+                    HandlePortStatus(args.Data);
                     break;
                 }
             }

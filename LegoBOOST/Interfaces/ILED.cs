@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LegoBOOSTNet.Constants;
 
 namespace LegoBOOSTNet.Interfaces
@@ -6,7 +7,7 @@ namespace LegoBOOSTNet.Interfaces
     public interface ILED
     {
         void SetColor(Color color);
-        void SetColorAsync(Color color);
+        Task SetColorAsync(Color color);
 
         event EventHandler OnColorChanged;
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using System.Threading.Tasks;
 using LegoBOOSTNet.Constants;
 using LegoBOOSTNet.Helpers;
 using LegoBOOSTNet.Interfaces;
@@ -12,13 +11,13 @@ namespace LegoBOOSTNet.Classes
 {
     class LED : ILED
     {
-        private readonly GattCharacteristic _characteristic;
+        private readonly IConnection _connection;
         private readonly Ports _port;
         private Color _color;
 
-        internal LED(GattCharacteristic characteristic, Ports port)
+        internal LED(IConnection connection, Ports port)
         {
-            _characteristic = characteristic;
+            _connection = connection;
             _port = port;
 
             LoggerHelper.Instance.Debug("Button constructor called");
@@ -33,11 +32,8 @@ namespace LegoBOOSTNet.Classes
         public void SetColor(Color color)
         {
             _color = color;
-            var buffer = CreateMessage().AsBuffer();
 
-            var result = AsyncHelpers.RunSync(() => _characteristic.WriteValueAsync(buffer).AsTask());
-
-            if (result != GattCommunicationStatus.Success)
+            if (!_connection.WriteValue(CreateMessage()))
             {
                 LoggerHelper.Instance.Debug("LED::SetColor - failed to set color");
                 throw new Exception("Failed to set color");
@@ -46,12 +42,14 @@ namespace LegoBOOSTNet.Classes
             LoggerHelper.Instance.Debug($"LED::SetColor color = {color} called");
         }
 
-        public async void SetColorAsync(Color color)
+        public async Task SetColorAsync(Color color)
         {
             _color = color;
-            var buffer = CreateMessage().AsBuffer();
 
-            await _characteristic.WriteValueAsync(buffer);
+            if (!await _connection.WriteValueAsync(CreateMessage()))
+            {
+                LoggerHelper.Instance.Debug("LED::SetColor - failed to set color");
+            }
 
             LoggerHelper.Instance.Debug("LED::SetColorAsync called");
         }
